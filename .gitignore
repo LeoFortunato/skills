@@ -31,4 +31,4 @@ __pycache__/
 .pytest_cache/
 
 # Host-specific skill metadata
-.agents/*/agents/
+.agents/skills/*/agents/

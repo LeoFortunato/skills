@@ -10,6 +10,13 @@ Versioning.
 ### Changed
 
 - Keep host-specific `agents/` metadata outside versioned skill packages.
+- Move installable skill packages to the standard `.agents/skills/` discovery
+  path.
+- Document Skills CLI installation and skills.sh discovery.
+
+### Added
+
+- Add `skills.sh.json` groupings for the skills.sh repository page.
 
 ## [0.1.0] - 2026-07-21
 

@@ -3,20 +3,23 @@
 Platform-neutral, reusable skills. Each skill packages its instructions and
 any supporting references needed to apply it consistently in different tools,
 projects, and execution environments. The repository is maintained directly
-from its `.agents/` directory.
+from its `.agents/skills/` directory.
+
+[![skills.sh](https://skills.sh/b/LeoFortunato/skills)](https://skills.sh/LeoFortunato/skills)
 
 ## Repository layout
 
 ```text
 .agents/
-└── <skill-name>/
-    ├── SKILL.md             # Skill instructions and usage contract
-    ├── references/          # Optional supporting documentation and templates
-    └── assets/              # Optional reusable assets
+└── skills/
+    └── <skill-name>/
+        ├── SKILL.md        # Skill instructions and usage contract
+        ├── references/     # Optional supporting documentation and templates
+        └── assets/         # Optional reusable assets
 ```
 
-All installable skills live under `.agents/`. Each direct child directory of
-`.agents/` is one self-contained skill package.
+All installable skills live under `.agents/skills/`. Each direct child
+directory is one self-contained skill package.
 
 ## Available skills
 
@@ -35,11 +38,29 @@ guides, tutorials, API and CLI references, troubleshooting articles,
 operational procedures, release notes, and technical messages without claiming
 official ASD-STE100 certification or compliance.
 
+## Installation
+
+List the skills available in this repository:
+
+```bash
+npx skills add LeoFortunato/skills --list
+```
+
+Install a specific skill:
+
+```bash
+npx skills add LeoFortunato/skills --skill goal-prompt-writer
+npx skills add LeoFortunato/skills --skill technical-english-writer-asd-ste100
+```
+
+The skills.sh catalog discovers skills after the repository is installed with
+the Skills CLI and its anonymous telemetry is enabled.
+
 ## Adding a skill
 
-1. Create `.agents/<skill-name>/` using a short, kebab-case skill name.
+1. Create `.agents/skills/<skill-name>/` using a short, kebab-case skill name.
 2. Add a `SKILL.md` with YAML front matter containing `name` and `description`.
-3. Keep references and assets inside `.agents/<skill-name>/`.
+3. Keep references and assets inside `.agents/skills/<skill-name>/`.
 4. Do not commit host-specific `agents/` directories or adapter metadata inside
    a skill package.
 5. Update the available-skills section above and verify all documented paths.

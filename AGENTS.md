@@ -3,21 +3,22 @@
 ## Repository purpose
 
 This repository contains reusable, platform-neutral skills installed under
-`.agents/`. Each `.agents/<skill-name>/` directory is a self-contained package
-that may include a `SKILL.md` and supporting references or assets. Keep
-host-specific metadata and adapters outside the versioned skill packages.
+`.agents/skills/`. Each `.agents/skills/<skill-name>/` directory is a
+self-contained package that may include a `SKILL.md` and supporting references
+or assets. Keep host-specific metadata and adapters outside the versioned skill
+packages.
 
 ## Working rules
 
 - Treat the applicable `SKILL.md` as the source of truth for a skill's behavior.
-- Install every skill at `.agents/<skill-name>/`; do not place skill packages at
-  the repository root.
+- Install every skill at `.agents/skills/<skill-name>/`; do not place skill
+  packages at the repository root.
 - Keep skill instructions concise, actionable, and internally consistent.
 - Preserve the required YAML front matter and directory conventions used by
   existing skills.
 - Keep reusable templates and reference material inside the applicable
-  `.agents/<skill-name>/` directory.
-- Do not commit `.agents/<skill-name>/agents/` directories or other
+  `.agents/skills/<skill-name>/` directory.
+- Do not commit `.agents/skills/<skill-name>/agents/` directories or other
   host-specific adapter metadata inside skill packages.
 - Do not add secrets, user-specific paths, generated artifacts, or unrelated
   application code.
