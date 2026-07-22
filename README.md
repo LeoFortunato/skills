@@ -2,7 +2,8 @@
 
 Platform-neutral, reusable skills. Each skill packages its instructions and
 any supporting references needed to apply it consistently in different tools,
-projects, and execution environments.
+projects, and execution environments. The repository is maintained directly
+from its `.agents/` directory.
 
 ## Repository layout
 
