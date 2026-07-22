@@ -4,9 +4,8 @@
 
 This repository contains reusable, platform-neutral skills installed under
 `.agents/`. Each `.agents/<skill-name>/` directory is a self-contained package
-that may include a `SKILL.md` and supporting references or assets. A consuming
-tool may provide its own optional metadata or adapter; the skill itself must not
-depend on that adapter.
+that may include a `SKILL.md` and supporting references or assets. Keep
+host-specific metadata and adapters outside the versioned skill packages.
 
 ## Working rules
 
@@ -18,15 +17,16 @@ depend on that adapter.
   existing skills.
 - Keep reusable templates and reference material inside the applicable
   `.agents/<skill-name>/` directory.
+- Do not commit `.agents/<skill-name>/agents/` directories or other
+  host-specific adapter metadata inside skill packages.
 - Do not add secrets, user-specific paths, generated artifacts, or unrelated
   application code.
-- Use technical English in skill instructions, templates, and metadata unless a
-  skill explicitly targets another language.
+- Use technical English in skill instructions and templates unless a skill
+  explicitly targets another language.
 - Do not require proprietary commands, APIs, models, plugins, runtimes, prompt
   syntaxes, directory names, or instruction files from a particular tool.
 - Describe integrations as optional adapters and keep their implementation
-  separate from the portable instructions, for example under
-  `.agents/<skill-name>/agents/`.
+  outside the portable skill package.
 - Update the relevant README or reference documentation when a structural or
   behavioral change affects how a skill is used.
 

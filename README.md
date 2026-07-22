@@ -11,9 +11,8 @@ from its `.agents/` directory.
 .agents/
 └── <skill-name>/
     ├── SKILL.md             # Skill instructions and usage contract
-    ├── agents/
-    │   └── openai.yaml      # Optional host-specific metadata adapter
-    └── references/          # Optional supporting documentation and templates
+    ├── references/          # Optional supporting documentation and templates
+    └── assets/              # Optional reusable assets
 ```
 
 All installable skills live under `.agents/`. Each direct child directory of
@@ -41,9 +40,8 @@ official ASD-STE100 certification or compliance.
 1. Create `.agents/<skill-name>/` using a short, kebab-case skill name.
 2. Add a `SKILL.md` with YAML front matter containing `name` and `description`.
 3. Keep references and assets inside `.agents/<skill-name>/`.
-4. If a host tool needs metadata, provide it as a separate adapter such as
-   `.agents/<skill-name>/agents/openai.yaml`. Do not make the portable skill
-   depend on the adapter.
+4. Do not commit host-specific `agents/` directories or adapter metadata inside
+   a skill package.
 5. Update the available-skills section above and verify all documented paths.
 
 See [AGENTS.md](AGENTS.md) for repository-wide contribution and validation

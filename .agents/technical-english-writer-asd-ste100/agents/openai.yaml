@@ -1,4 +1,0 @@
-interface:
-  display_name: "Technical English Writer ASD-STE100"
-  short_description: "Write clear, controlled software documentation"
-  default_prompt: "Use $technical-english-writer-asd-ste100 to rewrite this software documentation in clear, controlled technical English."

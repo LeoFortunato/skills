@@ -7,6 +7,10 @@ Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- Keep host-specific `agents/` metadata outside versioned skill packages.
+
 ## [0.1.0] - 2026-07-21
 
 ### Added
