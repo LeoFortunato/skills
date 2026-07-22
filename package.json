@@ -1,0 +1,7 @@
+{
+  "name": "reusable-skills",
+  "version": "0.1.0",
+  "description": "Platform-neutral, reusable skill packages installed under .agents.",
+  "private": true,
+  "license": "MIT"
+}

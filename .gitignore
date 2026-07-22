@@ -1,0 +1,31 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editors and local tooling
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Generated and temporary files
+coverage/
+dist/
+build/
+tmp/
+temp/
+*.log
+*.tmp
+
+# Common local dependency/cache directories
+node_modules/
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
