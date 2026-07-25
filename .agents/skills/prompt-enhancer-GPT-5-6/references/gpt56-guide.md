@@ -21,24 +21,26 @@ Selecting the right model balances capability, latency, and cost for a given tas
 GPT-5.6 introduces and refines several key execution parameters:
 
 ### Reasoning Effort (`reasoning.effort`)
-Options: `none`, `low`, `medium`, `high`, `xhigh`, `max`
-- `none`: Pure text generation without reasoning overhead (latency baseline).
-- `low`: Latency-sensitive tasks requiring minimal decision logic.
-- `medium`: Balanced starting point for tool-using and analytical tasks (default).
-- `high` / `xhigh`: Complex reasoning, deep verification, and intricate coding.
-- `max`: Maximum exploration for demanding, quality-first workloads.
+- `none`: Text generation without reasoning overhead (latency baseline).
+- `low`: Tool-use, planning, search, or multi-step decision making where latency is sensitive.
+- `medium`: Balanced starting point for tool-using, analytical, and general tasks (API default).
+- `high`: Complex debugging, deep planning, and high-value tasks.
+- `xhigh`: Deep research, asynchronous workflows, and agentic tasks requiring long runs.
+- `max`: Demanding quality-first workloads requiring maximum exploration and verification.
 
 ### Pro Mode (`reasoning.mode: "pro"`)
 - Applies additional model work before emitting a single final answer to maximize reliability on difficult tasks.
 - Use for high-value code reviews, complex optimizations, and deep risk analysis where quality matters more than latency.
+- Independent of `reasoning.effort` (can be combined with any supported effort level).
 
 ### Text Verbosity (`text.verbosity`)
 Options: `low`, `medium`, `high`
 - Controls baseline response detail. API default is `medium`. Use `low` for concise, direct responses without adding overly restrictive prompt rules like "be extremely brief".
 
 ### Programmatic Tool Calling (PTC)
-- Allows the model to write JavaScript to execute tools concurrently and reduce large intermediate data payloads inside a hosted runtime.
-- Best for bounded data filtering, aggregation, ranking, or multi-tool workflows where intermediate outputs don't require semantic judgment between calls.
+- Allows the model to write JavaScript code in a hosted runtime to execute tools concurrently, filter data, aggregate results, and eliminate large intermediate payloads.
+- Best for bounded data processing (filtering, joining, ranking, deduplication, aggregation, validation) where intermediate outputs don't require fresh model judgment between each step.
+- Use direct tool calls when: intermediate outputs are small, individual results change the model's next semantic decision, actions require human approval, or native artifacts/citations must be preserved.
 
 ---
 
@@ -52,18 +54,22 @@ Options: `low`, `medium`, `high`
 - State each directive once. Avoid redundant rules or excessive capitalizations (`ALWAYS`, `NEVER`).
 - Lean prompts reduce total token cost, decrease latency, and improve instruction-following accuracy by 10–15%.
 
-### C. Autonomy & Approval Boundaries
+### C. Personality & Collaboration Style Separation
+- **Personality** controls how the assistant sounds: tone, warmth, directness, formality, polish, and demeanor.
+- **Collaboration Style** controls how the assistant works: when to ask for clarification, when to make assumptions, proactivity level, how much context to provide, and how to handle risk or uncertainty.
+
+### D. Autonomy & Approval Boundaries
 - Explicitly define actions authorized autonomously (e.g., inspecting files, reading docs, local non-destructive edits, running unit tests).
 - Specify actions requiring explicit user confirmation (e.g., external API writes, destructive commands, file deletions, scope expansion).
 
-### D. Response Preamble for Streaming & Tool Use
+### E. Response Preamble for Streaming & Tool Use
 - For multi-step or tool-heavy workflows, include an instruction to emit a 1–2 sentence visible preamble acknowledging the request and stating the first step before launching tool calls.
 
-### E. Retrieval Budgets & Stopping Conditions
+### F. Retrieval Budgets & Stopping Conditions
 - Set explicit limits on search loops (e.g., perform one broad search; retrieve again only if mandatory facts are missing).
 - Define clear exit conditions when sufficient evidence is gathered.
 
-### F. Verification & Self-Checking
+### G. Verification & Self-Checking
 - Prompt the model to validate its own output using available commands (unit tests, linter checks, build validation, visual rendering inspection).
 
 ---
@@ -75,8 +81,11 @@ Use this canonical structure for enhanced prompts:
 ```text
 Role: [1-2 sentences defining the model's function, domain context, and core responsibility]
 
-# Personality & Tone
-[Directness, warmth, collaboration style, and question-asking threshold]
+# Personality
+[Tone, demeanor, formality, directness, and conversational polish]
+
+# Collaboration Style
+[Proactivity, when to make reasonable assumptions vs when to ask for clarification, handling uncertainty]
 
 # Goal
 [Clear, outcome-oriented description of the target destination]
@@ -86,6 +95,15 @@ Role: [1-2 sentences defining the model's function, domain context, and core res
 
 # Constraints & Approval Boundaries
 [Autonomous vs approval-required actions, evidence limits, safety & business rules]
+
+# Tools
+[Available tools, usage rules, or explicit <tool_orchestration> block for PTC]
+<tool_orchestration>
+Use Programmatic Tool Calling for [bounded stage] using only [eligible tools].
+Process and reduce intermediate results, then emit exactly [output schema].
+Stop when [condition] is met. Retry transient failures at most [R] times.
+Use direct tool calls for [semantic judgment, approval, or final validation].
+</tool_orchestration>
 
 # Output Format & Structure
 [Structure, sections, verbosity, length limits, and content preservation order]
