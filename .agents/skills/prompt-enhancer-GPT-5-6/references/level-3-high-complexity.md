@@ -24,8 +24,9 @@ This reference defines the model, parameters, rules, and prompt architecture for
 ## 3. Rules & Aggregation
 
 - **INCLUDE** `# Role`, separated `# Personality` and `# Collaboration Style`.
-- **INCLUDE** `# Constraints & Approval Boundaries` (autonomous vs approval-required actions).
-- **INCLUDE** `# Context & File Access Guardrails` (Anti-Releitura, target file limits, partial line reads, instant search stopping).
+- **INCLUDE** `# Response Preamble & Noise Reduction` (send a 1-2 sentence visible update before tool execution, minimize intermediate commentary).
+- **INCLUDE** `# Constraints & Approval Boundaries` (explicit split of autonomous actions vs approval-required actions).
+- **INCLUDE** `# Context & File Access Guardrails` (Anti-Releitura, target file limits, partial line ranges, instant retrieval stopping).
 - **INCLUDE** `# Tools` or `<tool_orchestration>` block for Programmatic Tool Calling.
 - **INCLUDE** `# Stop Rules & Retrieval Budget`.
 - **INCLUDE** `# Validation Directive` (tiered testing/linting/build verification).
@@ -45,6 +46,10 @@ Role: [1-2 sentences defining identity, domain expertise, and operational contex
 # Collaboration Style
 [Proactivity, when to make reasonable assumptions vs when to ask for clarification, handling uncertainty]
 
+# Response Preamble & Execution Noise
+- Before invoking tools for a multi-step task, emit a single visible 1-2 sentence update acknowledging the goal and stating the immediate first step.
+- Silence unnecessary intermediate commentary between tool calls ("calar o agente") to preserve tokens and prevent context bloat.
+
 # Goal
 [Target outcome described by destination rather than rigid step-by-step procedures]
 
@@ -52,13 +57,14 @@ Role: [1-2 sentences defining identity, domain expertise, and operational contex
 [Specific, verifiable conditions that must be met before finalizing output]
 
 # Constraints & Approval Boundaries
-[Autonomous vs approval-required actions, safety, privacy, and side-effect limits]
+- Autonomous Local Actions: Reading specified files, running non-destructive tests/linters, and editing target source files within the task scope.
+- Require Explicit Confirmation: Performing destructive file/data operations, calling external network APIs, executing arbitrary shell commands outside workspace, or expanding task scope.
 
-# Context & File Access Guardrails
-- Inspect ONLY explicitly specified target files: [list paths]. Do NOT perform broad codebase sweeps.
-- For files over 100 lines, use targeted line ranges (StartLine/EndLine). Avoid reading full large files unnecessarily.
-- Never re-read a file already loaded into conversation memory unless modified by a tool call in an intermediate step.
-- Stop retrieval immediately once sufficient evidence is gathered.
+# Context & File Access Guardrails (Anti-Releitura)
+- Inspect ONLY explicitly specified target files: [list paths or subdirectories]. Do NOT perform broad codebase sweeps.
+- For files over 100 lines, use targeted line ranges (StartLine/EndLine). Do NOT load entire large files into context.
+- STRICT ANTI-RELEITURA: Never re-read, re-view, or re-open a file already loaded into conversation context unless modified by an editing tool in an intermediate step.
+- Stop retrieval immediately once sufficient evidence is gathered. Do not perform secondary searches for cosmetic or non-essential details.
 
 # Tools
 [Available tools, usage rules, or explicit <tool_orchestration> block for PTC]

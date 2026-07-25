@@ -22,9 +22,9 @@ This reference defines the model, parameters, rules, and prompt architecture for
 
 ## 3. Rules & Aggregation
 
-- **INCLUDE** `# Role`, `# Personality & Collaboration Style` (unified), `# Goal`, `# Success Criteria`, `# Constraints`, and `# Output Format`.
-- **OMIT** heavy file-access guardrails unless multi-file codebase navigation is requested.
-- **OMIT** Programmatic Tool Calling (PTC) orchestration unless requested.
+- **INCLUDE** `# Role`, `# Personality & Collaboration Style` (unified), `# Goal`, `# Success Criteria`, `# Constraints & Approval Boundaries`, and `# Output Format & Structure`.
+- **INCLUDE** light file navigation guardrail: Do not re-read unchanged files already in conversation context.
+- **OMIT** heavy Programmatic Tool Calling (PTC) orchestration unless explicitly requested.
 
 ---
 
@@ -39,13 +39,15 @@ Role: [1-2 sentences defining identity and domain context]
 [Tone, directness, and basic clarification rules]
 
 # Goal
-[Target outcome described by destination]
+[Target outcome described by destination rather than rigid micro-steps]
 
 # Success Criteria
 [Verifiable completion conditions]
 
-# Constraints
-[Safety, style, and scope boundaries]
+# Constraints & Approval Boundaries
+- Autonomous actions: Make in-scope local changes, inspect relevant files, run non-destructive tests.
+- Confirmation required: External API writes, destructive file operations, or scope expansion.
+- Context rule: Do not re-read files already present in conversation history unless modified by a tool.
 
 # Output Format & Structure
 [Structure, sections, and verbosity preference]
