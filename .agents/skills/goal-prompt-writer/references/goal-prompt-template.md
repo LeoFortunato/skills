@@ -1,40 +1,41 @@
-# Long-Running Task Prompt Template
+# Goal Prompt Template
 
-Use this format when creating a copy-ready prompt for a long-running task.
+Use this format when creating a copy-ready Codex Goal mode prompt. Prompts created using this template must always be written in English.
 
 ```markdown
-Objective: Complete [single objective] without stopping until [observable done-when criteria], while staying within [scope boundary].
+/goal Complete [single objective] without stopping until [observable done-when criteria], while staying within [scope boundary].
 
 Context to read first:
-- [Path, issue, plan, log, screenshot, review, or command output the execution agent must inspect before editing]
+- [Path, issue, plan, log, screenshot, PR, or command output Codex must inspect before editing]
 - [Any source of truth that overrides older docs]
-- [Project instruction files, current branch, and existing validation commands when present]
+- [AGENTS.md, current branch, and existing validation commands; read docs/SUMMARY.md only if the domain requires repository docs]
 
 Scope:
 - Do: [specific allowed implementation, investigation, migration, or repair work], and update relevant documentation.
-- Do not: [explicit non-goals and files/systems to leave untouched]
+- Do not: [explicit non-goals, files/systems to leave untouched, and do not perform broad codebase sweeps or acquire unrelated context]
 
 Constraints:
-- Follow [repo rules, architecture constraints, language/style rules, product requirements].
-- Proceed with safe local reads, edits, and non-destructive validation authorized by this prompt.
+- Follow [repo rules, architecture constraints, UI design system tokens, language/style rules, product requirements].
+- Proceed with safe local reads, edits, and non-destructive validation authorized by this goal.
 - Ask before [auth policy, payments, permissions, schema, production data, deployment, remote migrations, destructive commands, pushes, merges, PRs, credentials, or other external/high-risk action].
-- Preserve [backward compatibility, user data, public API behavior, UI contract, migration rollback, etc.].
+- Preserve [backward compatibility, user data, public API behavior, UI contract, responsive viewports across light/dark themes, migration rollback, etc.].
 - Use repository-native commands and follow any repository-specific command requirements.
 
 Checkpoints:
-1. [Read/diagnose checkpoint]: report key findings and planned file touch list.
+1. [Read/diagnose checkpoint]: report key findings and planned file touch list without reading unrelated context.
 2. [Implementation checkpoint]: make the smallest coherent change and verify locally.
 3. [Hardening checkpoint]: add or update tests, remove temporary code, and update relevant project documentation to reflect the executed changes.
 4. [Final checkpoint]: review diff, summarize changed files, and prove done condition.
 
 Validation:
-- Run `[smallest relevant command]`.
-- Run `[broader canonical command]` if the change touches shared behavior.
-- Confirm [artifact/behavior/log/screenshot] shows [expected result].
+- Run `[targeted test command for changed behavior first]`.
+- Run `[typecheck / lint commands]`.
+- Run `[broader canonical command]` if the change touches shared behavior or before final completion.
+- Confirm [artifact/behavior/log/screenshot/viewport] shows [expected result].
 
 Stop or ask when:
-- The objective requires changing scope, product behavior, auth, schema, billing, deployment, or production data.
-- The same blocker repeats after three attempts.
+- The blocker depends on user input, decision, authorization, credentials, scope expansion, or high-risk actions: block immediately and question the user.
+- The blocker does not depend on the user (e.g., local test/build failure): test 3 times before pausing/blocking and asking for guidance.
 - Validation cannot run locally or fails for reasons outside this goal.
 - Required context is unavailable or conflicts with explicit user instructions.
 
@@ -46,16 +47,16 @@ Progress reporting:
 ## Filled Example: This Repository
 
 ```markdown
-Objective: Complete the approved authentication proxy migration without stopping until protected routes redirect correctly, public routes remain public, relevant checks pass, and the diff is clean; pause and report if required approval or context is missing.
+/goal Complete the approved Next.js auth proxy migration without stopping until protected routes redirect correctly, public routes remain public, relevant web checks pass, and the diff is clean; pause and report if required approval or context is missing.
 
 Context to read first:
-- Project instruction files
-- Project documentation summary, when present
+- AGENTS.md
+- docs/SUMMARY.md
 - `git branch --show-current`
 - `git status --short`
 - apps/web/src/proxy.ts
 - apps/web/src/lib/auth/
-- apps/web/src/lib/session/
+- apps/web/src/lib/supabase/
 - Existing auth tests under apps/web
 
 Scope:
@@ -64,12 +65,12 @@ Scope:
 
 Constraints:
 - Treat current repository code and explicit user requirements as the source of truth; use historical PRD text only as context.
-- Follow the project's application conventions, current session handling, and applicable nested instruction files.
-- Use commands available in the project environment. Detect the current branch before platform-sensitive checks.
+- Follow App Router conventions, current Supabase SSR cookie handling, and applicable nested `AGENTS.md` files.
+- Use native shell commands. Detect the current branch before platform-sensitive checks; staging targets arm64 and main targets amd64.
 - Proceed with approved local reads, edits, tests, and diff review. Ask before changing auth policy, schema, remote migrations, deployment, pushes, merges, PRs, credentials, production data, or destructive state.
-- Preserve the health-check endpoint as dependency-free.
+- Preserve `/api/health` as dependency-free.
 - Keep user-facing strings in locale files and write implementation notes in technical English.
-- After validation, create a small commit if the repository contract requires it; do not push.
+- After validation, create a small Conventional Commit if the repository contract requires it; do not push.
 
 Checkpoints:
 1. Read the instruction chain and current auth flow; report the exact failing path and proposed file touch list.
@@ -86,9 +87,10 @@ Validation:
 - Confirm protected routes redirect unauthenticated users and public routes do not.
 
 Stop or ask when:
-- The fix requires auth policy changes, database schema changes, provider dashboard changes, remote migrations, deployment, pushes, merges, PRs, or production credentials.
+- The blocker depends on user input or authorization (e.g., auth policy changes, database schema changes, provider dashboard changes, remote migrations, deployment, pushes, merges, PRs, or production credentials): block immediately and question the user.
+- The blocker does not depend on the user (e.g., local test or build failure): attempt/test 3 times before pausing/blocking.
 - Validation cannot run due to missing local dependencies.
-- The same failure remains after three distinct fixes, or required instructions conflict.
+- Required instructions conflict.
 
 Progress reporting:
 - Send a short preamble before the first tool call. At each major checkpoint, report evidence, next action, remaining work, and blocker state; omit routine command narration.

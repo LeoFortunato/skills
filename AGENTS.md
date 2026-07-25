@@ -14,8 +14,6 @@ packages.
 - Install every skill at `.agents/skills/<skill-name>/`; do not place skill
   packages at the repository root.
 - Keep skill instructions concise, actionable, and internally consistent.
-- Preserve the required YAML front matter and directory conventions used by
-  existing skills.
 - Keep reusable templates and reference material inside the applicable
   `.agents/skills/<skill-name>/` directory.
 - Do not commit `.agents/skills/<skill-name>/agents/` directories or other
@@ -36,9 +34,8 @@ packages.
 Before considering a change complete:
 
 1. Review the changed files and confirm paths referenced by documentation exist.
-2. Validate YAML files with an available YAML parser when they are changed.
-3. Check Markdown for broken relative links and obvious formatting errors.
-4. Run `git diff --check` and review `git status --short`.
+2. Check Markdown for broken relative links and obvious formatting errors.
+3. Run `git diff --check` and review `git status --short`.
 
 There is currently no repository-wide build or test command. Add focused
 validation alongside a skill if its implementation introduces executable code.
