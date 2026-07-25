@@ -1,5 +1,5 @@
 ---
-name: prompt-enhancer
+name: prompt-enhancer-GPT-5-6
 description: Refine, enhance, and structure prompts for OpenAI models (specifically GPT-5.6 Sol, Terra, and Luna) based on official OpenAI documentation and prompting best practices. Trigger whenever the user asks to enhance, refine, optimize, polish, or format a prompt, or calls this skill to improve a prompt draft for GPT models.
 ---
 
