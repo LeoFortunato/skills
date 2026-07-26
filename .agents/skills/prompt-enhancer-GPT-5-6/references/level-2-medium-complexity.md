@@ -1,54 +1,57 @@
-# Level 2: Medium Complexity Prompt Reference Guide
+# Level 2: Routine Multi-Step Prompts
 
-This reference defines the model, parameters, rules, and prompt architecture for **Level 2 (Medium Complexity)** tasks.
+Use this route for standard feature work, routine multi-file edits, API
+endpoints, documentation changes, analysis with several inputs, or customer
+workflows that need a small number of behavioral rules.
 
----
+## Construction Rules
 
-## 1. Task Scope & Characteristics
+- Lead with the outcome, not a rigid implementation sequence.
+- Name the context that can change the answer.
+- Define observable success criteria.
+- State permission or side-effect boundaries once when the task can mutate data,
+  files, or external systems.
+- Add output structure and relevant validation.
+- Add personality or collaboration guidance only for customer-facing or
+  interactive behavior, and keep it short.
+- Do not add arbitrary file-size limits, blanket rereading prohibitions, or
+  generic tool instructions.
 
-- **Use Cases**: Standard feature implementation, routine multi-file edits, REST API endpoints, documentation updates, standard customer support agents.
-- **Primary Objective**: Balanced quality, cost efficiency, and structural clarity.
+## Optional Model and API Guidance
 
----
+Provide this only when the user asks for configuration:
 
-## 2. Model & Parameter Configuration
+- Start with `gpt-5.6-terra` for balanced everyday work.
+- Use `gpt-5.6-sol` when ambiguity, consequence, or polish justifies more model
+  capability.
+- Start with `reasoning.effort: "medium"` and compare `"low"` on representative
+  tasks when latency or cost matters.
+- Use `text.verbosity: "medium"` unless the required output calls for another
+  level.
+- Omit `reasoning.mode` when standard mode is sufficient.
 
-- **Recommended Model**: `gpt-5.6-terra` (balanced performance and cost).
-- **Reasoning Effort (`reasoning.effort`)**: `medium` (API default for analytical and tool-using tasks).
-- **Reasoning Mode (`reasoning.mode`)**: `"standard"`.
-- **Text Verbosity (`text.verbosity`)**: `medium`.
-
----
-
-## 3. Rules & Aggregation
-
-- **INCLUDE** `# Role`, `# Personality & Collaboration Style` (unified), `# Goal`, `# Success Criteria`, `# Constraints & Approval Boundaries`, and `# Output Format & Structure`.
-- **INCLUDE** light file navigation guardrail: Do not re-read unchanged files already in conversation context.
-- **OMIT** heavy Programmatic Tool Calling (PTC) orchestration unless explicitly requested.
-
----
-
-## 4. Balanced Prompt Template
-
-Use this balanced structure for Level 2 prompts:
+## Template
 
 ```text
-Role: [1-2 sentences defining identity and domain context]
+Goal:
+[Describe the user-visible outcome.]
 
-# Personality & Collaboration Style
-[Tone, directness, and basic clarification rules]
+Context:
+[List only the files, data, policies, or prior decisions that matter.]
 
-# Goal
-[Target outcome described by destination rather than rigid micro-steps]
+Success criteria:
+- [Observable condition.]
+- [Required behavior or preserved contract.]
 
-# Success Criteria
-[Verifiable completion conditions]
+Constraints and permissions:
+- [Material scope, safety, business, or compatibility rule.]
+- [Action that requires confirmation, if any.]
 
-# Constraints & Approval Boundaries
-- Autonomous actions: Make in-scope local changes, inspect relevant files, run non-destructive tests.
-- Confirmation required: External API writes, destructive file operations, or scope expansion.
-- Context rule: Do not re-read files already present in conversation history unless modified by a tool.
+Output:
+[Required structure, audience, language, or length.]
 
-# Output Format & Structure
-[Structure, sections, and verbosity preference]
+Validation:
+[Most relevant check, or what to report if it cannot run.]
 ```
+
+Remove any section that does not change the expected behavior.

@@ -1,86 +1,97 @@
-# Level 3: High Complexity / Agentic Prompt Reference Guide
+# Level 3: Complex or High-Consequence Prompts
 
-This reference defines the model, parameters, rules, and prompt architecture for **Level 3 (High Complexity / Agentic)** tasks.
+Use this route for ambiguous architecture work, deep debugging, high-value
+reviews, research that needs evidence, long tool-using workflows, or tasks where
+incorrect side effects would be costly.
 
----
+## Construction Rules
 
-## 1. Task Scope & Characteristics
+- Define one primary outcome and an observable completion bar.
+- Provide the evidence, starting paths, policies, and constraints that can
+  materially affect the result.
+- Distinguish safe in-scope work from external, destructive, costly, or
+  scope-expanding actions that require confirmation.
+- Let the model choose an efficient path. Prescribe steps only when order is a
+  requirement.
+- For retrieval, start with the named sources, expand only when required for
+  correctness, and stop when the core request has enough evidence.
+- For grounded outputs, require citations for material claims, label inference,
+  and report missing or conflicting evidence.
+- Request a short preamble before the first tool call and sparse updates only at
+  major phase changes when visible progress is useful.
+- Validate the changed or generated artifact with the most relevant available
+  checks. Do not mandate unrelated broad checks.
 
-- **Use Cases**: Complex architectural design, deep multi-file debugging, long-running agentic coding goals, Programmatic Tool Calling (PTC), multi-agent coordination, or high-risk tasks.
-- **Primary Objective**: Maximum quality, strict context boundaries, robust safety guardrails, and verifiable completion.
+Avoid arbitrary line-count limits, blanket bans on rereading, fixed search
+budgets without a task basis, and universal retry counts. These rules can prevent
+the model from collecting evidence needed for correctness.
 
----
+## Optional Model and API Guidance
 
-## 2. Model & Parameter Configuration
+Provide this only when the user asks for configuration:
 
-- **Recommended Model**: `gpt-5.6-sol` (flagship frontier capability).
-- **Reasoning Effort (`reasoning.effort`)**: `high` (complex debugging), `xhigh` (deep research / long runs), or `max` (demanding quality-first workloads).
-- **Reasoning Mode (`reasoning.mode`)**: `"pro"` when quality/reliability on high-risk tasks outranks latency; otherwise `"standard"`.
-- **Text Verbosity (`text.verbosity`)**: `medium` or `high`.
-- **Programmatic Tool Calling (PTC)**: Recommended for bounded tool stages processing structured data in JS.
+- Start with `gpt-5.6-sol`.
+- Use `reasoning.effort: "medium"` as a baseline. Raise it to `"high"` or
+  `"xhigh"` when evaluations show that deeper reasoning improves the task.
+- Reserve `"max"` for the hardest quality-first workloads.
+- Consider `reasoning.mode: "pro"` only for difficult Responses API tasks where
+  quality or reliability outweighs latency and cost. Test it against standard
+  mode with the same prompt and effort.
+- Use `text.verbosity: "medium"` by default, then specify task-specific content
+  and length in the prompt.
 
----
-
-## 3. Rules & Aggregation
-
-- **INCLUDE** `# Role`, separated `# Personality` and `# Collaboration Style`.
-- **INCLUDE** `# Response Preamble & Noise Reduction` (send a 1-2 sentence visible update before tool execution, minimize intermediate commentary).
-- **INCLUDE** `# Constraints & Approval Boundaries` (explicit split of autonomous actions vs approval-required actions).
-- **INCLUDE** `# Context & File Access Guardrails` (Anti-Releitura, target file limits, partial line ranges, instant retrieval stopping).
-- **INCLUDE** `# Tools` or `<tool_orchestration>` block for Programmatic Tool Calling.
-- **INCLUDE** `# Stop Rules & Retrieval Budget`.
-- **INCLUDE** `# Validation Directive` (tiered testing/linting/build verification).
-
----
-
-## 4. Full Agentic & Guardrailed Prompt Template
-
-Use this full structure for Level 3 prompts:
+## Prompt Template
 
 ```text
-Role: [1-2 sentences defining identity, domain expertise, and operational context]
+Role:
+[Include only when domain framing changes behavior.]
 
-# Personality
-[Tone, demeanor, formality, and directness]
+Goal:
+[Describe the primary outcome.]
 
-# Collaboration Style
-[Proactivity, when to make reasonable assumptions vs when to ask for clarification, handling uncertainty]
+Context and evidence:
+- [Starting sources, files, data, policies, or known facts.]
 
-# Response Preamble & Execution Noise
-- Before invoking tools for a multi-step task, emit a single visible 1-2 sentence update acknowledging the goal and stating the immediate first step.
-- Silence unnecessary intermediate commentary between tool calls ("calar o agente") to preserve tokens and prevent context bloat.
+Success criteria:
+- [Observable completion condition.]
+- [Required evidence, preserved contract, or quality bar.]
 
-# Goal
-[Target outcome described by destination rather than rigid step-by-step procedures]
+Constraints and permissions:
+- Proceed with [safe, in-scope actions].
+- Ask before [external, destructive, costly, or scope-expanding actions].
+- Preserve [data, behavior, compatibility, policy, or design contract].
 
-# Success Criteria
-[Specific, verifiable conditions that must be met before finalizing output]
+Tools and retrieval:
+[State only task-specific prerequisites, routing decisions, evidence rules, and
+fallback behavior.]
 
-# Constraints & Approval Boundaries
-- Autonomous Local Actions: Reading specified files, running non-destructive tests/linters, and editing target source files within the task scope.
-- Require Explicit Confirmation: Performing destructive file/data operations, calling external network APIs, executing arbitrary shell commands outside workspace, or expanding task scope.
+Progress and stopping:
+[State useful phase updates, retry or fallback limits with a task-specific
+reason, and when to ask or abstain.]
 
-# Context & File Access Guardrails (Anti-Releitura)
-- Inspect ONLY explicitly specified target files: [list paths or subdirectories]. Do NOT perform broad codebase sweeps.
-- For files over 100 lines, use targeted line ranges (StartLine/EndLine). Do NOT load entire large files into context.
-- STRICT ANTI-RELEITURA: Never re-read, re-view, or re-open a file already loaded into conversation context unless modified by an editing tool in an intermediate step.
-- Stop retrieval immediately once sufficient evidence is gathered. Do not perform secondary searches for cosmetic or non-essential details.
+Validation:
+[Targeted checks first; broader checks only when relevant.]
 
-# Tools
-[Available tools, usage rules, or explicit <tool_orchestration> block for PTC]
-<tool_orchestration>
-Use Programmatic Tool Calling for [bounded stage] using only [eligible tools].
-Process and reduce intermediate results, then emit exactly [output schema].
-Stop when [condition] is met. Retry transient failures at most [R] times.
-Use direct tool calls for [semantic judgment, approval, or final validation].
-</tool_orchestration>
-
-# Output Format & Structure
-[Structure, sections, verbosity, length limits, and content preservation order]
-
-# Stop Rules & Retrieval Budget
-[Tool loop termination criteria, search limits, and missing evidence fallback]
-
-# Validation Directive
-[Tiered verification commands: targeted unit tests -> lint/typecheck -> build/smoke checks]
+Output:
+[Required structure, evidence, length, and audience.]
 ```
+
+## Programmatic Tool Calling
+
+Add a PTC block only for the OpenAI Responses API when the runtime exposes
+eligible tools and the task contains a bounded stage that can reduce structured
+intermediate results without fresh model judgment:
+
+```text
+<tool_orchestration>
+Use Programmatic Tool Calling only for [bounded stage] with [eligible tools].
+Reduce the results to [exact schema] while preserving [required evidence].
+Retry transient failures at most [task-specific limit] and stop when [condition].
+Use direct tool calls for approval, semantic judgment, citations, and final
+validation. Do not repeat completed work.
+</tool_orchestration>
+```
+
+Multiple or dependent calls alone do not justify PTC. Prefer direct calls when a
+result changes the next decision, an action needs approval, or the final answer
+must preserve citations or native artifacts.

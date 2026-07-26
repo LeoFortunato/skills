@@ -1,91 +1,148 @@
 ---
 name: prompt-enhancer-GPT-5-6
-description: Refine, enhance, and structure prompts for OpenAI models (specifically GPT-5.6 Sol, Terra, and Luna) as well as durable Codex `/goal` mode prompts based on official OpenAI documentation and prompting best practices. Trigger whenever the user asks to enhance, refine, optimize, polish, or format a prompt, or create a Codex `/goal` prompt draft.
+description: Improve, review, or structure prompts for GPT-5.6 Sol, Terra, and Luna, including Codex `/goal` objectives. Use when the user asks to refine a prompt or turn requirements into a ready-to-use prompt. Do not use merely to execute a task, answer a general OpenAI documentation question, or select a model when no prompt work is requested.
 ---
 
-# Prompt Enhancer (GPT-5.6 & Codex Goal Mode Edition)
+# Prompt Enhancer for GPT-5.6 and Codex Goals
 
-This skill transforms draft prompts or task descriptions into production-ready prompts by dynamically classifying task complexity and target execution surface (Standard Prompts vs. Codex `/goal` Mode), selecting the optimal GPT-5.6 model variant and parameters, and loading the single reference file matching the target category.
+Transform a draft prompt or task description into the smallest prompt contract
+that reliably expresses the intended outcome. Preserve the user's intent,
+facts, required structure, language, and target surface.
 
-## Workflow Overview
+## Operating Principles
 
-When invoked, execute the following four-phase workflow:
+- Describe the desired result before prescribing a process.
+- State each instruction once. Remove repetition, obsolete scaffolding, and
+  contradictions.
+- Keep only context, constraints, examples, tools, and validation rules that
+  change behavior.
+- Use absolute language only for true invariants. Use decision rules for
+  judgment calls.
+- Do not claim that a rewrite improves quality, latency, or cost without
+  representative evaluation evidence.
+- Treat official OpenAI documentation as authoritative for current model names,
+  API fields, feature availability, and Codex behavior. Treat community advice
+  as anecdotal unless it is validated by official guidance or evaluations.
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│ Phase 1: Input Analysis & Brief Interview                   │
-├─────────────────────────────────────────────────────────────┤
-│ Phase 2: Classification & Reference File Loading            │
-├─────────────────────────────────────────────────────────────┤
-│ Phase 3: Dynamic Rule Aggregation & Prompt Construction     │
-├─────────────────────────────────────────────────────────────┤
-│ Phase 4: Output Delivery & Rationale                        │
-└─────────────────────────────────────────────────────────────┘
-```
+## Workflow
 
----
+### 1. Identify the Prompt Surface
 
-## Phase 1: Input Analysis & Brief Interview
+Determine whether the requested artifact is:
 
-Analyze the user's initial input. If key prompt engineering elements are missing or underspecified, conduct a brief, targeted interview before generating the final prompt.
+- a standard ChatGPT or Codex prompt;
+- an OpenAI API prompt, possibly with request configuration; or
+- a Codex `/goal` objective for long-running work.
 
-### 1. Key Information Check
-Check if the input specifies:
-- **Core Objective**: What specific outcome or artifact should be produced?
-- **Context & Inputs**: What data, files, policies, or background details are available?
-- **Task Scope & Complexity**: Is this a single-step task, standard feature, complex agentic workflow, or a long-running multi-turn Codex goal?
-- **Target Surface**: Is the prompt intended for a standard interactive session or Codex `/goal` mode?
-- **Constraints & Approval Boundaries**: What actions are allowed autonomously vs. requiring explicit approval?
-- **Success Criteria & Verification**: How is correctness verified (e.g., tests, inspection)?
-- **Output Format & Verbosity**: What structure, style, or verbosity is expected?
+Preserve an explicitly requested model or surface. If the user asks for a
+current model recommendation or API configuration, verify it against current
+official OpenAI documentation when live documentation is available. Otherwise,
+avoid claims of currentness and label any unverified recommendation.
 
-### 2. Interview Guidelines
-- Ask **3 to 5 concise, direct questions** focusing strictly on missing information needed to construct a high-quality prompt.
-- If the user provides a comprehensive draft with all details present, skip the interview and proceed directly to Phase 2.
+Keep surface controls separate:
 
----
+- `reasoning.effort`, `reasoning.mode`, `text.verbosity`, and Programmatic Tool
+  Calling are API configuration or runtime capabilities, not prose that must be
+  inserted into every prompt.
+- Codex model and reasoning choices are surface settings. Do not present API
+  request fields as Codex `/goal` syntax.
 
-## Phase 2: Classification & Reference File Loading
+### 2. Resolve Only Material Gaps
 
-Classify the request into one of four distinct categories/routes and load ONLY the single reference file matching that route:
+Check for the information that can change the result:
 
-### 1. Level 1: Low Complexity (Minimalist)
-- **Scope**: Single-step operations, formatting, simple data extraction, function refactoring, classification, code snippet generation, or direct Q&A.
-- **Reference File to Read**: `references/level-1-low-complexity.md`
+- outcome or artifact;
+- relevant context and inputs;
+- required constraints or permission boundaries;
+- success criteria and validation;
+- output format, audience, or language.
 
-### 2. Level 2: Medium Complexity (Balanced)
-- **Scope**: Standard feature implementation, multi-file routine edits, REST API endpoints, documentation updates, standard customer support agents.
-- **Reference File to Read**: `references/level-2-medium-complexity.md`
+Ask one to three concise questions only when the missing answer would materially
+change the prompt and a safe assumption is not available. Otherwise, state the
+important assumption briefly and continue. Do not require an interview or make
+the user complete a fixed questionnaire.
 
-### 3. Level 3: High Complexity (Agentic & Guardrailed - Standard Session)
-- **Scope**: Complex architectural design, deep multi-file debugging, Programmatic Tool Calling (PTC), multi-agent coordination, or high-risk tasks intended for standard interactive sessions.
-- **Reference File to Read**: `references/level-3-high-complexity.md`
+### 3. Select One Route
 
-### 4. Codex Goal Mode (`/goal` Mode - Multi-Turn Autonomous Execution)
-- **Scope**: Multi-turn, long-running, durable coding objectives to be executed autonomously via Codex's `/goal` command line interface.
-- **Reference File to Read**: `references/goal-mode-codex.md`
+Choose by task shape, risk, and execution surface rather than prompt length.
+Read only the matching reference:
 
----
+- **Level 1 — focused and repeatable:** `references/level-1-low-complexity.md`
+- **Level 2 — routine multi-step work:** `references/level-2-medium-complexity.md`
+- **Level 3 — complex or high-consequence work:**
+  `references/level-3-high-complexity.md`
+- **Codex `/goal`:** `references/goal-mode-codex.md`
 
-## Phase 3: Dynamic Rule Aggregation & Prompt Construction
+If the user provides a working production prompt and failure traces or evals,
+preserve its architecture and make the smallest targeted change that addresses
+the measured failure. Do not rewrite the complete prompt stack by default.
 
-Follow the instructions and prompt template from the loaded reference file:
+### 4. Construct the Prompt
 
-- **If Level 1**: Construct a Minimalist Prompt using `gpt-5.6-luna` (or `gpt-5.6-terra`) and parameters from `references/level-1-low-complexity.md`. Apply the Lean Prompts principle (omit all secondary guardrails and redundant role descriptions).
-- **If Level 2**: Construct a Balanced Prompt using `gpt-5.6-terra` and parameters from `references/level-2-medium-complexity.md`. Include moderate autonomy boundaries and basic context navigation rules.
-- **If Level 3**: Construct a Full Agentic & Guardrailed Prompt using `gpt-5.6-sol` and parameters from `references/level-3-high-complexity.md`. Inject explicit Context & File Access Guardrails (Anti-Releitura, line range limits, retrieval budgets), Autonomy & Approval Boundaries, Preamble & Noise Reduction rules, Tool Orchestration (PTC), and Tiered Validation Directives.
-- **If Codex Goal Mode**: Construct a structured Codex `/goal` prompt using `gpt-5.6-sol` (`reasoning.effort: high`) and parameters from `references/goal-mode-codex.md`. Ensure:
-  - The prompt is drafted strictly in **Technical English**.
-  - The `/goal` objective line and prompt body remain under **4,000 characters**.
-  - Includes `Context to read first`, `Scope`, `Constraints`, `Checkpoints`, `Validation` (tiered loop), `Stop or ask when` (3-try non-user retry policy vs. immediate user blocker policy), and `Progress reporting`.
+Use only the sections the task needs. A useful order for non-trivial prompts is:
 
----
+1. goal;
+2. context or evidence;
+3. success criteria;
+4. constraints and side-effect boundaries;
+5. tools or retrieval rules, when relevant;
+6. output requirements;
+7. validation and stopping conditions.
 
-## Phase 4: Output Delivery
+Add a role only when domain framing changes behavior. Add personality or
+collaboration guidance only when user experience or interaction policy matters.
+Keep both short.
 
-Deliver the refined prompt package structured into four clearly separated sections:
+For editing, rewriting, or summarization, state what must be preserved before
+describing improvements. For grounded work, require support for material claims
+and define what to do when evidence is missing.
 
-1. **Assessed Complexity & Target Surface**: Indicated category (Level 1 - Low, Level 2 - Medium, Level 3 - High/Agentic Standard, or Codex `/goal` Mode) with technical justification.
-2. **Recommended Model & Parameters**: Selected GPT-5.6 model slug (`gpt-5.6-sol`, `gpt-5.6-terra`, or `gpt-5.6-luna`) and parameter settings (`reasoning.effort` from `none` to `max`, `reasoning.mode` [`standard`/`pro`], `text.verbosity`, PTC, etc.).
-3. **Enhanced Prompt**: The final ready-to-use prompt rendered in a code block, using the specific architecture template for the assessed category.
-4. **Key Enhancements & Aggregation Rationale**: Summary explaining which rules were aggregated or omitted to optimize token efficiency and model execution performance according to OpenAI's Lean Prompts principle.
+### 5. Add Configuration Only When Useful
+
+If the user requests model or API guidance, use the loaded route reference.
+Prefer the lowest setting that meets the quality bar. Recommend higher effort,
+Pro mode, or Programmatic Tool Calling only when the task shape or
+representative evaluations justify the additional cost and complexity.
+
+## Output
+
+Default to:
+
+1. **Enhanced Prompt** — ready to copy and use.
+2. **Notes** — only material assumptions, surface-specific configuration, or
+   substantive changes that the user should know.
+
+Omit classification labels, model settings, and rationale when they do not help
+the user. If settings are included, label whether they apply to the OpenAI API
+or to a Codex surface.
+
+For a Codex goal, return the `/goal` objective in Technical English as this
+skill's output convention. Keep the goal objective non-empty and within 4,000
+characters. Put longer implementation details in a referenced file.
+
+## Routing Examples
+
+Use this skill for:
+
+- "Improve this support-agent system prompt."
+- "Turn these API workflow requirements into a GPT-5.6 prompt."
+- "Create a `/goal` objective from this implementation brief."
+- "Review this prompt against GPT-5.6 guidance."
+
+Do not use this skill for:
+
+- executing the task described by an already-final prompt;
+- general OpenAI product documentation with no prompt artifact;
+- a model migration that requires code or API changes beyond prompt text;
+- ordinary copyediting when the text is not a prompt.
+
+## Quality Check
+
+Before delivery, confirm that the prompt:
+
+- preserves the user's intent and explicit values;
+- has an observable outcome and completion bar;
+- contains no duplicate or contradictory instructions;
+- uses only material constraints and available capabilities;
+- labels surface-specific settings and does not overstate unverified facts;
+- is no longer than necessary.

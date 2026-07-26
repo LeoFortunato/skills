@@ -1,47 +1,48 @@
-# Level 1: Low Complexity Prompt Reference Guide
+# Level 1: Focused and Repeatable Prompts
 
-This reference defines the model, parameters, rules, and prompt architecture for **Level 1 (Low Complexity)** tasks.
+Use this route for extraction, classification, formatting, transformation,
+direct questions, and other well-scoped tasks with an obvious completion point.
 
----
+## Construction Rules
 
-## 1. Task Scope & Characteristics
+- State the task directly.
+- Include the input or context only when it is not already supplied.
+- Specify the output shape when format matters.
+- Add one or two constraints only when violating them would make the result
+  unusable.
+- Omit roles, personality, tool policy, progress reporting, and elaborate
+  validation unless they change behavior.
 
-- **Use Cases**: Single-step operations, formatting, simple data extraction, function refactoring, classification, code snippet generation, or direct Q&A.
-- **Primary Objective**: Maximum execution speed, minimal cost, and zero prompt bloat.
+## Optional Model and API Guidance
 
----
+Provide this only when the user asks for configuration:
 
-## 2. Model & Parameter Configuration
+- Start with `gpt-5.6-luna` for clear, repeatable, high-volume work.
+- Use `gpt-5.6-terra` when the task needs stronger language judgment or tool use.
+- Start with `reasoning.effort: "low"`. Use `"none"` only as a latency baseline
+  for tasks that do not benefit from reasoning or tools.
+- Use `text.verbosity: "low"` when a concise API response is desired.
+- Compare settings on representative inputs before claiming an improvement.
 
-- **Recommended Model**: `gpt-5.6-luna` (or `gpt-5.6-terra` if high language precision is needed).
-- **Reasoning Effort (`reasoning.effort`)**: `none` (latency baseline) or `low` (minimal decision logic).
-- **Reasoning Mode (`reasoning.mode`)**: `"standard"`.
-- **Text Verbosity (`text.verbosity`)**: `low` (direct, concise responses without redundant filler).
+Treat the named fields as API request configuration. For ChatGPT or Codex,
+recommend only controls that the target surface exposes. Do not insert settings
+into the prompt body unless the user asks for a configuration block.
 
----
-
-## 3. Rules & Omissions
-
-To comply with OpenAI's *Lean Prompts* principle (improving accuracy by 10-15% and reducing token costs by up to 67%):
-
-- **OMIT** `# Personality` and `# Collaboration Style` blocks.
-- **OMIT** `# Tools` and `<tool_orchestration>` blocks.
-- **OMIT** `# Context & File Access Guardrails`.
-- **OMIT** `# Stop Rules & Retrieval Budget`.
-- **OMIT** `# Validation Directive`.
-
----
-
-## 4. Minimalist Prompt Template
-
-Use this minimal structure for Level 1 prompts:
+## Template
 
 ```text
-Role: [1 sentence defining the model's function and domain context]
+Task:
+[State the requested result.]
 
-# Goal
-[Direct, clear description of the target outcome]
+Input:
+[Include or point to the necessary input. Omit when already attached.]
 
-# Output Format
-[Output schema, code block, or format preference]
+Output:
+[State the required format, length, or fields.]
+
+Constraints:
+[Include only material invariants. Omit this section when none are needed.]
 ```
+
+For very simple requests, collapse the template into one or two natural-language
+sentences.
