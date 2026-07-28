@@ -6,8 +6,10 @@ description: Refine, review, or structure a draft prompt for GPT-5.6 Sol, Terra,
 # Prompt Enhancer for GPT-5.6 and Codex Goals
 
 Transform a draft prompt or task description into the smallest reliable prompt
-contract. Preserve the user's intent, facts, required structure, language, and
-explicit choices.
+contract. Preserve the user's intent, facts, required structure, and explicit
+choices. Generate every enhanced prompt in Technical English, regardless of the
+draft's language. Preserve any requirement for the task's own output language
+as an instruction written in Technical English.
 
 ## Workflow
 
@@ -74,8 +76,9 @@ For editing, rewriting, or summarization, state what must be preserved before
 describing improvements. For grounded work, define the required evidence and
 what to do when evidence is missing.
 
-Preserve the draft's language unless the user requests another language. For a
-Codex `/goal`, write the generated objective in Technical English.
+Translate the draft faithfully and write every generated prompt, including a
+Codex `/goal` objective, in Technical English. Do not retain or accept a
+different language for the enhanced prompt.
 
 ### 5. Select Model and Reasoning Effort
 
@@ -118,6 +121,7 @@ Before delivery, confirm that the result:
 - reflects the loaded route reference;
 - has an observable outcome and completion bar;
 - contains no duplicate or contradictory instructions;
+- writes the enhanced prompt entirely in Technical English;
 - recommends exactly one model and one reasoning effort;
 - for a Codex `/goal`, includes confirmed target paths from the required
   read-only discovery;
