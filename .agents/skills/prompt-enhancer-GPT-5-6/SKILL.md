@@ -1,148 +1,124 @@
 ---
-name: prompt-enhancer-GPT-5-6
-description: Improve, review, or structure prompts for GPT-5.6 Sol, Terra, and Luna, including Codex `/goal` objectives. Use when the user asks to refine a prompt or turn requirements into a ready-to-use prompt. Do not use merely to execute a task, answer a general OpenAI documentation question, or select a model when no prompt work is requested.
+name: prompt-enhancer-gpt-5-6
+description: Refine, review, or structure a draft prompt for GPT-5.6 Sol, Terra, or Luna, including Codex `/goal` objectives with read-only discovery of the relevant project files. Use when the user invokes this skill with a simple prompt, asks to improve a prompt, or wants requirements turned into a copy-ready prompt with a required route, model, and reasoning-effort recommendation. Do not use merely to execute the task described by a finished prompt.
 ---
 
 # Prompt Enhancer for GPT-5.6 and Codex Goals
 
-Transform a draft prompt or task description into the smallest prompt contract
-that reliably expresses the intended outcome. Preserve the user's intent,
-facts, required structure, language, and target surface.
-
-## Operating Principles
-
-- Describe the desired result before prescribing a process.
-- State each instruction once. Remove repetition, obsolete scaffolding, and
-  contradictions.
-- Keep only context, constraints, examples, tools, and validation rules that
-  change behavior.
-- Use absolute language only for true invariants. Use decision rules for
-  judgment calls.
-- Do not claim that a rewrite improves quality, latency, or cost without
-  representative evaluation evidence.
-- Treat official OpenAI documentation as authoritative for current model names,
-  API fields, feature availability, and Codex behavior. Treat community advice
-  as anecdotal unless it is validated by official guidance or evaluations.
+Transform a draft prompt or task description into the smallest reliable prompt
+contract. Preserve the user's intent, facts, required structure, language, and
+explicit choices.
 
 ## Workflow
 
-### 1. Identify the Prompt Surface
+### 1. Analyze the Draft
 
-Determine whether the requested artifact is:
+Identify the information that can materially change the result:
 
-- a standard ChatGPT or Codex prompt;
-- an OpenAI API prompt, possibly with request configuration; or
-- a Codex `/goal` objective for long-running work.
-
-Preserve an explicitly requested model or surface. If the user asks for a
-current model recommendation or API configuration, verify it against current
-official OpenAI documentation when live documentation is available. Otherwise,
-avoid claims of currentness and label any unverified recommendation.
-
-Keep surface controls separate:
-
-- `reasoning.effort`, `reasoning.mode`, `text.verbosity`, and Programmatic Tool
-  Calling are API configuration or runtime capabilities, not prose that must be
-  inserted into every prompt.
-- Codex model and reasoning choices are surface settings. Do not present API
-  request fields as Codex `/goal` syntax.
-
-### 2. Resolve Only Material Gaps
-
-Check for the information that can change the result:
-
-- outcome or artifact;
+- intended outcome or artifact;
 - relevant context and inputs;
-- required constraints or permission boundaries;
+- constraints and permission boundaries;
 - success criteria and validation;
-- output format, audience, or language.
+- output format, audience, and language;
+- whether the user wants a standard prompt or a persistent Codex `/goal`.
 
-Ask one to three concise questions only when the missing answer would materially
-change the prompt and a safe assumption is not available. Otherwise, state the
-important assumption briefly and continue. Do not require an interview or make
-the user complete a fixed questionnaire.
+Do not execute the task described by the draft. Refine the prompt itself.
 
-### 3. Select One Route
+### 2. Resolve Material Gaps
 
-Choose by task shape, risk, and execution surface rather than prompt length.
-Read only the matching reference:
+Ask one to three concise questions only when a missing answer would materially
+change the prompt and no safe assumption is available.
 
-- **Level 1 — focused and repeatable:** `references/level-1-low-complexity.md`
-- **Level 2 — routine multi-step work:** `references/level-2-medium-complexity.md`
+If questions are necessary:
+
+1. ask only the questions;
+2. do not select a route or draft the final prompt yet;
+3. end the response and wait for the user's answers.
+
+If no material question is necessary, continue without an interview. State a
+material assumption in the final output only when it helps the user review the
+result.
+
+### 3. Select Exactly One Route
+
+Choose by task shape, consequence, and execution pattern. Read only the matching
+reference:
+
+- **Level 1 — focused and repeatable:**
+  `references/level-1-low-complexity.md`
+- **Level 2 — routine multi-step work:**
+  `references/level-2-medium-complexity.md`
 - **Level 3 — complex or high-consequence work:**
   `references/level-3-high-complexity.md`
-- **Codex `/goal`:** `references/goal-mode-codex.md`
+- **Codex `/goal` — persistent long-running objective:**
+  `references/goal-mode-codex.md`
 
-If the user provides a working production prompt and failure traces or evals,
-preserve its architecture and make the smallest targeted change that addresses
-the measured failure. Do not rewrite the complete prompt stack by default.
+The four entries above are the complete creation router. Model choice is an
+output of the selected route, not another route.
+
+For the Codex `/goal` route, complete the reference's bounded, read-only target
+discovery before constructing the prompt. Do not draft a Goal prompt from
+guessed file paths or validation commands.
+
+If the user provides a working production prompt with failure traces or
+evaluations, preserve its architecture and make the smallest targeted change
+that addresses the demonstrated failure.
 
 ### 4. Construct the Prompt
 
-Use only the sections the task needs. A useful order for non-trivial prompts is:
-
-1. goal;
-2. context or evidence;
-3. success criteria;
-4. constraints and side-effect boundaries;
-5. tools or retrieval rules, when relevant;
-6. output requirements;
-7. validation and stopping conditions.
-
-Add a role only when domain framing changes behavior. Add personality or
-collaboration guidance only when user experience or interaction policy matters.
-Keep both short.
+Follow the selected reference and use only sections that change behavior.
+Describe the desired result before prescribing a process. State each instruction
+once and remove contradictions, obsolete scaffolding, and irrelevant rules.
 
 For editing, rewriting, or summarization, state what must be preserved before
-describing improvements. For grounded work, require support for material claims
-and define what to do when evidence is missing.
+describing improvements. For grounded work, define the required evidence and
+what to do when evidence is missing.
 
-### 5. Add Configuration Only When Useful
+Preserve the draft's language unless the user requests another language. For a
+Codex `/goal`, write the generated objective in Technical English.
 
-If the user requests model or API guidance, use the loaded route reference.
-Prefer the lowest setting that meets the quality bar. Recommend higher effort,
-Pro mode, or Programmatic Tool Calling only when the task shape or
-representative evaluations justify the additional cost and complexity.
+### 5. Select Model and Reasoning Effort
 
-## Output
+Always select one GPT-5.6 model and one reasoning effort using the loaded route
+reference and the actual task. Prefer the lowest effort that reliably meets the
+quality bar.
 
-Default to:
+Preserve an explicitly requested model or effort. Keep the recommendation
+outside the enhanced prompt: model and effort are execution choices, not prose
+to insert into the prompt body.
 
-1. **Enhanced Prompt** — ready to copy and use.
-2. **Notes** — only material assumptions, surface-specific configuration, or
-   substantive changes that the user should know.
+Do not add setup instructions or unrelated runtime configuration.
 
-Omit classification labels, model settings, and rationale when they do not help
-the user. If settings are included, label whether they apply to the OpenAI API
-or to a Codex surface.
+## Required Output
 
-For a Codex goal, return the `/goal` objective in Technical English as this
-skill's output convention. Keep the goal objective non-empty and within 4,000
-characters. Put longer implementation details in a referenced file.
+After any necessary questions have been answered, return exactly these sections:
 
-## Routing Examples
+1. **Selected Route** — route name plus one concise sentence explaining the
+   classification.
+2. **Recommended Model** — one of `gpt-5.6-luna`, `gpt-5.6-terra`, or
+   `gpt-5.6-sol`.
+3. **Reasoning Effort** — one effort suitable for the active Codex surface and
+   task.
+4. **Enhanced Prompt** — ready to copy and use, enclosed in a code block.
+5. **Assumptions** — include only when a material assumption was necessary.
 
-Use this skill for:
+Never omit the selected route, model, reasoning effort, or enhanced prompt.
+Keep the route explanation concise and do not add configuration that the user
+did not request.
 
-- "Improve this support-agent system prompt."
-- "Turn these API workflow requirements into a GPT-5.6 prompt."
-- "Create a `/goal` objective from this implementation brief."
-- "Review this prompt against GPT-5.6 guidance."
-
-Do not use this skill for:
-
-- executing the task described by an already-final prompt;
-- general OpenAI product documentation with no prompt artifact;
-- a model migration that requires code or API changes beyond prompt text;
-- ordinary copyediting when the text is not a prompt.
+For a Codex goal, keep the objective non-empty and within 4,000 characters. Put
+longer implementation details in a referenced file.
 
 ## Quality Check
 
-Before delivery, confirm that the prompt:
+Before delivery, confirm that the result:
 
 - preserves the user's intent and explicit values;
+- uses exactly one of the four routes;
+- reflects the loaded route reference;
 - has an observable outcome and completion bar;
 - contains no duplicate or contradictory instructions;
-- uses only material constraints and available capabilities;
-- labels surface-specific settings and does not overstate unverified facts;
+- recommends exactly one model and one reasoning effort;
+- for a Codex `/goal`, includes confirmed target paths from the required
+  read-only discovery;
 - is no longer than necessary.
