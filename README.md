@@ -30,6 +30,17 @@ helps define scope, constraints, validation checkpoints, approval boundaries,
 and stopping conditions without assuming a particular assistant, command
 syntax, model, or host platform.
 
+### `new-cnpj-validation`
+
+Implements, reviews, or tests Brazilian CNPJ validation supporting both the legacy
+numeric format and the Receita Federal alphanumeric format scheduled for July 2026.
+
+### `prompt-enhancer-gpt-5-6`
+
+Refines, reviews, and structures draft prompts for GPT-5.6 (Sol, Terra, Luna)
+models and Codex `/goal` objectives into Technical English prompt contracts with
+model routing and reasoning effort recommendations.
+
 ### `technical-english-writer-asd-ste100`
 
 Creates, rewrites, reviews, and maintains clear English software documentation
@@ -50,6 +61,8 @@ Install a specific skill:
 
 ```bash
 npx skills add LeoFortunato/skills --skill goal-prompt-writer
+npx skills add LeoFortunato/skills --skill new-cnpj-validation
+npx skills add LeoFortunato/skills --skill prompt-enhancer-gpt-5-6
 npx skills add LeoFortunato/skills --skill technical-english-writer-asd-ste100
 ```
 

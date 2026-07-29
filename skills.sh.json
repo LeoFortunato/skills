@@ -6,7 +6,15 @@
       "title": "Agent Workflows",
       "description": "Skills for defining bounded and verifiable agent work.",
       "skills": [
-        "goal-prompt-writer"
+        "goal-prompt-writer",
+        "prompt-enhancer-gpt-5-6"
+      ]
+    },
+    {
+      "title": "Validation & Business Rules",
+      "description": "Skills for regional data validation and compliance rules.",
+      "skills": [
+        "new-cnpj-validation"
       ]
     },
     {
