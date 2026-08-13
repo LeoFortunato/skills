@@ -1,0 +1,94 @@
+{
+  "skill": "async-jobs",
+  "version": "3.0.0",
+  "testCases": [
+    {
+      "id": "rq-enqueue-contract",
+      "rule": "rq-enqueue",
+      "query": "Enqueue an RQ job from a Python API without blocking the request",
+      "expectedBehavior": [
+        "Uses an explicit Redis connection and named Queue",
+        "Passes an importable function or dotted function reference with small explicit arguments",
+        "Returns a stable job ID instead of waiting for the result",
+        "Separates job_timeout, ttl, result_ttl, and failure_ttl"
+      ]
+    },
+    {
+      "id": "rq-json-serialization",
+      "rule": "rq-enqueue",
+      "query": "Configure an RQ queue safely for JSON-compatible job arguments",
+      "expectedBehavior": [
+        "Uses serializer=json on both Queue and Worker",
+        "Uses only JSON primitive argument types",
+        "Does not process untrusted Redis/job data with pickle",
+        "Keeps credentials out of job metadata, descriptions, results, and logs"
+      ]
+    },
+    {
+      "id": "rq-worker-lifecycle",
+      "rule": "rq-worker",
+      "query": "Run RQ workers with queue priority and graceful shutdown",
+      "expectedBehavior": [
+        "Recognizes that a standard worker processes one job at a time",
+        "Preserves queue order or explicitly selects round_robin/random dequeue behavior",
+        "Runs workers under a process manager in production",
+        "Lets SIGTERM finish the current job and registers worker death"
+      ]
+    },
+    {
+      "id": "rq-async-consumer",
+      "rule": "rq-lifecycle",
+      "query": "Review a custom asyncio consumer built on RQ",
+      "expectedBehavior": [
+        "Stops dequeuing before draining active tasks",
+        "Handles DequeueTimeout as an empty poll",
+        "Maintains job heartbeats independently of application work",
+        "Finalizes RQ state, cancels heartbeat tasks, and registers death in finally"
+      ]
+    },
+    {
+      "id": "rq-retries",
+      "rule": "rq-retries",
+      "query": "Configure bounded retries for transient RQ failures",
+      "expectedBehavior": [
+        "Uses Retry with an explicit maximum and bounded interval",
+        "Requires idempotency before retrying side effects",
+        "Enables the scheduler for delayed retry intervals",
+        "Keeps permanent failures distinguishable in FailedJobRegistry"
+      ]
+    },
+    {
+      "id": "rq-scheduling",
+      "rule": "rq-retries",
+      "query": "Schedule an RQ job and inspect its scheduled state",
+      "expectedBehavior": [
+        "Uses enqueue_at or enqueue_in",
+        "Runs a worker with the scheduler enabled",
+        "Recognizes ScheduledJobRegistry until the job is due",
+        "Protects programmatic scheduler startup with if __name__ == __main__"
+      ]
+    },
+    {
+      "id": "rq-cancel-stop",
+      "rule": "rq-lifecycle",
+      "query": "Cancel a queued RQ job or stop an active job",
+      "expectedBehavior": [
+        "Uses job.cancel for queued work",
+        "Uses send_stop_job_command for active work",
+        "Does not claim that stopped jobs are automatically retried",
+        "Checks CanceledJobRegistry or FailedJobRegistry respectively"
+      ]
+    },
+    {
+      "id": "rq-monitoring-testing",
+      "rule": "rq-observability",
+      "query": "Add RQ status, registry, result, heartbeat, and test coverage",
+      "expectedBehavior": [
+        "Uses get_status, get_meta, latest_result/results, and registry inspection",
+        "Uses Worker.count and heartbeats as liveness signals",
+        "Stores large outputs outside Redis",
+        "Uses SimpleWorker or Queue(is_async=False) for deterministic tests"
+      ]
+    }
+  ]
+}

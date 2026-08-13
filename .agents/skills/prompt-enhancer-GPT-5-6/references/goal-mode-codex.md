@@ -11,40 +11,27 @@ goal text acts as both the first prompt and the completion criteria.
 - Keep the model and reasoning-effort recommendation outside the `/goal` text.
 - Write the generated goal in Technical English as this skill's convention.
 
-## Discover Exact Targets Before Drafting
+## Token-Efficient Target Discovery Before Drafting
 
-Complete a bounded, read-only discovery pass before generating the Goal prompt:
+Complete a lightweight, token-efficient discovery pass to ground the Goal prompt:
 
-1. Read the user's referenced plan, brief, issue, attachment, or other source of
-   truth when it is available.
-2. Read the applicable `AGENTS.md` instruction chain and only the repository
-   documentation routed by those instructions.
-3. Resolve the exact existing files and directories relevant to the requested
-   change. Start from paths, routes, components, symbols, or behavior named by
-   the user or source of truth. Use targeted file and text search rather than a
-   broad repository sweep.
-4. Inspect enough current implementation, tests, documentation, and repository
-   scripts to confirm the likely touch set and the exact validation commands.
-5. Stop discovery as soon as the prompt can name the relevant targets and
-   verification without guessing.
+1. **Use Provided Context:** If the draft already supplies target paths or validation commands, adopt them directly without re-reading the files.
+2. **Verify Paths Lightly:** Use directory listing (`list_dir`) or targeted searches (`grep_search`) to confirm file existence and correct paths. Start with line-range inspection, then expand to broader or full reads when correctness, dependencies, or validation require it.
+3. **Focus on Direct Touch Sets and Pertinent Documentation:** Resolve the immediate target files and relevant test commands needed for the goal's completion criteria, plus the smallest set of pertinent documentation required to document the requested edit.
+4. **Stop Discovery Early:** Stop as soon as target paths, pertinent documentation paths, and validation commands are confirmed. Do not inspect unrelated files or documentation; inspect broader sources or tests only when required for correctness or validation.
 
-Do not edit files, implement the task, or run side-effecting commands during
-this discovery. Do not invent paths, scripts, tests, or commands.
+Do not edit files, implement the task, or run side-effecting commands during this discovery. Do not invent paths, scripts, tests, or commands.
 
-If a referenced source is unavailable, or the material target files cannot be
-resolved safely, ask one to three concise questions and wait for the user's
-answer before drafting the Goal prompt.
+If a referenced source is unavailable, or the material target files cannot be resolved safely, ask one to three concise questions and wait for the user's answer before drafting the Goal prompt.
 
 Carry the discovery into the prompt:
 
 - list the authoritative plan or brief first;
 - list confirmed source, test, and documentation paths;
-- identify confirmed new file paths separately when the source of truth
-  requires them;
+- identify confirmed new file paths separately when the source of truth requires them;
 - list exact repository-native validation commands when confirmed;
-- allow additional files only when current code shows they are necessary for
-  the approved objective, and require the agent to report the reason before
-  expanding the touch set.
+- identify the smallest set of pertinent documentation that must be updated for the requested edit, including documentation outside the initial implementation touch set when necessary;
+- allow additional files only when current code shows they are necessary for the approved objective, and require the agent to report the reason before expanding the touch set.
 
 ## Construction Rules
 
@@ -89,12 +76,12 @@ Context:
 Expected touch set:
 - Modify: [Exact confirmed existing paths.]
 - Add: [Exact confirmed new paths, if any.]
-- Touch additional files only when required by the approved objective and
-  current code; report the reason before expanding this set.
+- Do NOT inspect or edit any files outside this touch set without explicit prior user approval, except for the mandatory documentation synchronization below.
+- Documentation synchronization: after every repository edit, identify and update the smallest set of pertinent project documentation that describes the changed behavior, architecture, configuration, contract, workflow, or operations, even when those documentation paths are outside the expected touch set. Treat only those necessary documentation paths as an authorized touch-set extension; unrelated files remain prohibited. If no pertinent documentation exists, report that explicitly.
 
 Scope:
 - Do: [Authorized work needed for the outcome.]
-- Do not: [Material non-goals only.]
+- Do not: [Material non-goals; strictly forbid inspecting or editing out-of-scope files.]
 
 Constraints:
 - [Compatibility, policy, architecture, data, or design invariant.]

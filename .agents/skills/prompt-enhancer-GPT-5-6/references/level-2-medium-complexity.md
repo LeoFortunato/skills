@@ -35,11 +35,17 @@ Goal:
 Context:
 [List only the files, data, policies, or prior decisions that matter.]
 
+Touch Set (In-scope files):
+- Modify: [Exact target existing paths.]
+- Add: [Exact target new paths, if any.]
+
 Success criteria:
 - [Observable condition.]
 - [Required behavior or preserved contract.]
 
 Constraints and permissions:
+- Strictly limit execution to the declared Touch Set. Do NOT inspect or edit files outside this set without prior explicit approval, except for the mandatory documentation synchronization below.
+- After every repository edit, identify and update the smallest set of pertinent project documentation that describes the changed behavior, architecture, configuration, contract, workflow, or operations, even when those documentation paths are outside the original Touch Set. Treat only those necessary documentation paths as an authorized Touch Set extension; unrelated files remain prohibited. If no pertinent documentation exists, report that explicitly.
 - [Material scope, safety, business, or compatibility rule.]
 - [Action that requires confirmation, if any.]
 

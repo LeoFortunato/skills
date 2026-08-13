@@ -35,7 +35,9 @@ Output:
 [State the required format, length, or fields.]
 
 Constraints:
-[Include only material invariants. Omit when none are needed.]
+- Strictly limit execution to the specified inputs/paths. Do NOT inspect or edit out-of-scope files without prior approval, except for the mandatory documentation synchronization below.
+- For any repository edit, identify and update the smallest set of pertinent documentation for the changed behavior, architecture, configuration, contract, workflow, or operations, even when those documentation files are outside the specified paths. Treat only those necessary documentation files as an authorized scope extension; unrelated files remain prohibited. If no pertinent documentation exists, report that explicitly.
+- [Include material invariants.]
 ```
 
 For a very simple request, collapse the template into one or two natural
