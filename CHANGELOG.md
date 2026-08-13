@@ -7,6 +7,24 @@ Versioning.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-08-13
+
+### Added
+
+- Add `domain-modeling` skill for building ubiquitous language (`CONTEXT.md`), context maps, and ADRs (adapted from Matt Pocock's skills repository).
+- Add `grilling` skill for relentless iterative plan questioning and alignment interviews (adapted from Matt Pocock's skills repository).
+- Add `prompt-refine` skill for multi-mode prompt contract refinement without meta-prompt framing.
+- Add `rq-redis-queue` skill for RQ (Redis Queue) background jobs, workers, retries, scheduling, timeouts, registries, and graceful shutdown (adapted from orchestkit).
+
+### Changed
+
+- Rename `prompt-enhancer-gpt-5-6` to `prompt-enhancer` and make prompt templates, routing, model tiers, and reasoning recommendations fully provider-agnostic.
+- Rename `prompt-refine-codex-5-6` to `prompt-refine` and remove provider-specific references.
+- Remove Codex references from `goal-prompt-writer` and standardize on provider-agnostic goal prompts.
+- Update `README.md` and `skills.sh.json` to index and group all 8 installable repository skills with agnostic names.
+- Standardize YAML frontmatter metadata across all skills with `author`, `license: MIT`, and upstream `source` attributions.
+- Add source references attributing `rq-redis-queue` to `orchestkit`, and `domain-modeling` and `grilling` to Matt Pocock's skills repository.
+
 ## [0.2.0] - 2026-07-29
 
 ### Added

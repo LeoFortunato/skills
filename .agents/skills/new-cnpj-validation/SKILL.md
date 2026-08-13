@@ -1,6 +1,9 @@
 ---
 name: new-cnpj-validation
 description: Use when implementing, reviewing, or testing Brazilian CNPJ validation that must support both legacy numeric CNPJ and the Receita Federal alphanumeric CNPJ format scheduled for July 2026.
+metadata:
+  author: Leonardo Fortunato
+  license: MIT
 ---
 
 # New CNPJ Validation

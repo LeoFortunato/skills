@@ -1,6 +1,9 @@
 ---
 name: goal-prompt-writer
-description: Create or refine a copy-ready Codex `/goal` prompt. Use only when the user explicitly asks for a Goal mode prompt or asks to convert a task, issue, or plan into `/goal` instructions.
+description: Create or refine a copy-ready persistent goal or `/goal` mode prompt. Use only when the user explicitly asks for a Goal mode prompt or asks to convert a task, issue, or plan into `/goal` instructions.
+metadata:
+  author: Leonardo Fortunato
+  license: MIT
 ---
 
 # Goal Prompt Writer

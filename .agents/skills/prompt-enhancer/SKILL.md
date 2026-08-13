@@ -1,9 +1,12 @@
 ---
-name: prompt-enhancer-gpt-5-6
-description: Refine, review, or structure a draft prompt or turn bug reports, debug findings, and proposed fixes into a precise prompt for GPT-5.6 Sol, Terra, or Luna, including Codex `/goal` objectives with token-efficient discovery of relevant project files. Use when the user asks to improve a prompt, convert debug findings or erroneous behavior into a structured fix prompt, or turn requirements into a copy-ready prompt with a required route, model, and reasoning-effort recommendation. Do not use merely to execute the task described by a finished prompt.
+name: prompt-enhancer
+description: Refine, review, or structure a draft prompt or turn bug reports, debug findings, and proposed fixes into a precise prompt contract, including persistent `/goal` objectives with token-efficient discovery of relevant project files. Use when the user asks to improve a prompt, convert debug findings or erroneous behavior into a structured fix prompt, or turn requirements into a copy-ready prompt with a required route and reasoning-effort / model tier recommendation. Do not use merely to execute the task described by a finished prompt.
+metadata:
+  author: Leonardo Fortunato
+  license: MIT
 ---
 
-# Prompt Enhancer for GPT-5.6 and Codex Goals
+# Prompt Enhancer for Tasks and Goal Mode
 
 Transform a draft prompt, task description, bug report, or debug investigation finding (e.g., erroneous behavior, stack trace, or proposed fix discovered during debugging) into the smallest reliable prompt contract. When the input describes a bug or unexpected behavior discovered during debugging, extract the observed defect, the expected behavior, and the target touch set into a structured prompt instructing how to implement the proposed fix. Preserve the user's intent, facts, required structure, and explicit choices. Generate every enhanced prompt in Technical English, regardless of the draft's language. Preserve any requirement for the task's own output language as an instruction written in Technical English.
 
@@ -12,7 +15,7 @@ Transform a draft prompt, task description, bug report, or debug investigation f
 ### Guardrails for Token-Efficient Discovery
 
 1. **Trust User Inputs:** If the user's draft already specifies exact file paths, target modules, or validation commands, treat them as the initial targets without re-reading solely to confirm them. Inspect additional context when correctness requires it.
-2. **Minimal Target Verification:** When target files or validation commands must be resolved (e.g., in Codex `/goal` mode), start with lightweight listing (`list_dir`) or targeted searches (`grep_search`) and expand discovery only when needed for correctness or validation.
+2. **Minimal Target Verification:** When target files or validation commands must be resolved (e.g., in persistent `/goal` mode), start with lightweight listing (`list_dir`) or targeted searches (`grep_search`) and expand discovery only when needed for correctness or validation.
 3. **Targeted File Reading:** Start with the smallest relevant line ranges (e.g., headers, exports, or target function signatures). Read broader or full files when dependencies, behavior, or validation cannot be established safely from narrower context.
 4. **No Unrelated Sweeps:** Avoid general documentation, unrelated dependencies, and large test suites unless they are required for correctness, evidence, or validation.
 5. **Targeted Documentation Synchronization:** For prompts that authorize repository edits, require a bounded search for the smallest set of pertinent documentation tied to the changed behavior, architecture, configuration, contract, workflow, or operations. Do not scan unrelated documentation.
@@ -28,7 +31,7 @@ The input may be a draft prompt, raw requirements, or debug findings (e.g., obse
 - pertinent documentation that must stay synchronized with the requested edit;
 - success criteria and validation;
 - output format, audience, and language;
-- whether the user wants a standard prompt or a persistent Codex `/goal`.
+- whether the user wants a standard prompt or a persistent `/goal` mode objective.
 
 Do not execute the task or apply the bug fix directly. Refine the prompt itself.
 
@@ -58,13 +61,13 @@ reference:
   `references/level-2-medium-complexity.md`
 - **Level 3 — complex or high-consequence work:**
   `references/level-3-high-complexity.md`
-- **Codex `/goal` — persistent long-running objective:**
-  `references/goal-mode-codex.md`
+- **Goal mode (`/goal`) — persistent long-running objective:**
+  `references/goal-mode.md`
 
-The four entries above are the complete creation router. Model choice is an
+The four entries above are the complete creation router. Model tier choice is an
 output of the selected route, not another route.
 
-For the Codex `/goal` route, complete a token-efficient target discovery (verifying exact paths and validation commands with targeted reads) before constructing the prompt. Expand beyond targeted reads when correctness or validation requires broader context. Do not draft a Goal prompt from guessed file paths or validation commands.
+For the `/goal` route, complete a token-efficient target discovery (verifying exact paths and validation commands with targeted reads) before constructing the prompt. Expand beyond targeted reads when correctness or validation requires broader context. Do not draft a Goal prompt from guessed file paths or validation commands.
 
 If the user provides a working production prompt with failure traces or
 evaluations, preserve its architecture and make the smallest targeted change
@@ -96,14 +99,12 @@ supersedes any route template's blanket prohibition on out-of-Touch-Set edits;
 it does not authorize unrelated source, test, or asset changes.
 
 Translate the draft faithfully and write every generated prompt, including a
-Codex `/goal` objective, in Technical English. Do not retain or accept a
+`/goal` objective, in Technical English. Do not retain or accept a
 different language for the enhanced prompt.
 
-### 5. Select Model and Reasoning Effort
+### 5. Select Model Tier and Reasoning Effort
 
-Always select one GPT-5.6 model and one reasoning effort using the loaded route
-reference and the actual task. Prefer the lowest effort that reliably meets the
-quality bar.
+Always select an appropriate model capability tier (e.g., fast/lightweight, balanced, or high-capacity/frontier) and one reasoning effort using the loaded route reference and the actual task. Prefer the lowest effort that reliably meets the quality bar.
 
 Preserve an explicitly requested model or effort. Keep the recommendation
 outside the enhanced prompt: model and effort are execution choices, not prose
@@ -122,7 +123,7 @@ validation matrix before claiming completion:
 - a negative request that should not execute a finished task; and
 - an edge case involving missing paths, evidence, or validation commands.
 
-Review activation, route selection, model and effort recommendation, required
+Review activation, route selection, model tier and effort recommendation, required
 output structure, and no-invention or stop behavior. Record pass/fail evidence;
 frontmatter validation alone is not sufficient.
 
@@ -132,18 +133,16 @@ After any necessary questions have been answered, return exactly these sections:
 
 1. **Selected Route** — route name plus one concise sentence explaining the
    classification.
-2. **Recommended Model** — one of `gpt-5.6-luna`, `gpt-5.6-terra`, or
-   `gpt-5.6-sol`.
-3. **Reasoning Effort** — one effort suitable for the active Codex surface and
-   task.
+2. **Recommended Model Tier** — capability tier (e.g., lightweight, balanced, or high-capacity reasoning model) or user-specified model.
+3. **Reasoning Effort** — reasoning effort (e.g., low, medium, or high) suitable for the active agent runtime and task.
 4. **Enhanced Prompt** — ready to copy and use, enclosed in a code block.
 5. **Assumptions** — include only when a material assumption was necessary.
 
-Never omit the selected route, model, reasoning effort, or enhanced prompt.
+Never omit the selected route, model tier, reasoning effort, or enhanced prompt.
 Keep the route explanation concise and do not add configuration that the user
 did not request.
 
-For a Codex goal, keep the objective non-empty and within 4,000 characters. Put
+For a `/goal` prompt, keep the objective non-empty and within 4,000 characters. Put
 longer implementation details in a referenced file.
 
 ## Quality Check
@@ -158,8 +157,8 @@ Before delivery, confirm that the result:
 - has an observable outcome and completion bar;
 - contains no duplicate or contradictory instructions;
 - writes the enhanced prompt entirely in Technical English;
-- recommends exactly one model and one reasoning effort;
-- for a Codex `/goal`, includes target paths confirmed via token-efficient discovery;
+- recommends an appropriate model tier and reasoning effort;
+- for a `/goal` prompt, includes target paths confirmed via token-efficient discovery;
 - when the skill was created or materially revised, representative direct, indirect, incomplete, negative, and edge cases were exercised and reviewed;
 - avoided unnecessary full-file reads and broad repository sweeps;
 - is no longer than necessary.

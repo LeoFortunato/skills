@@ -1,5 +1,5 @@
 {
-  "skill": "async-jobs",
+  "skill": "rq-redis-queue",
   "version": "3.0.0",
   "testCases": [
     {

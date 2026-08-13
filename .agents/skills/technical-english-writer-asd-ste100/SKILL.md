@@ -1,6 +1,9 @@
 ---
 name: technical-english-writer-asd-ste100
 description: Create, rewrite, review, and maintain English software documentation with an adapted ASD-STE100-inspired controlled-language method. Use for guides, tutorials, API and CLI references, troubleshooting articles, operational procedures, release notes, and technical messages that must be clear, concise, consistent, and unambiguous.
+metadata:
+  author: Leonardo Fortunato
+  license: MIT
 ---
 
 # Technical English Writer ASD-STE100

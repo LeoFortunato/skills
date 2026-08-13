@@ -14,13 +14,11 @@ direct questions, and other well-scoped tasks with an obvious completion point.
 
 ## Required Recommendation
 
-Select exactly one model and effort:
+Select an appropriate model tier and effort:
 
-- Prefer `gpt-5.6-luna` for clear, repeatable, or high-volume work.
-- Select `gpt-5.6-terra` only when the task needs stronger language judgment or
-  non-trivial tool use while remaining tightly scoped.
-- Prefer low reasoning effort for quick, well-scoped work. Raise it to medium
-  only when ambiguity or checking requirements justify the additional work.
+- Prefer a fast/lightweight model for clear, repeatable, or high-volume work.
+- Select a balanced general-purpose model only when the task needs stronger language judgment or non-trivial tool use while remaining tightly scoped.
+- Prefer low reasoning effort for quick, well-scoped work. Raise it to medium only when ambiguity or checking requirements justify the additional work.
 
 ## Prompt Template
 

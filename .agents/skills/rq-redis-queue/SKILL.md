@@ -1,6 +1,10 @@
 ---
-name: async-jobs
+name: rq-redis-queue
 description: Implement and review RQ (Redis Queue) background jobs, queues, workers, retries, scheduling, timeouts, registries, heartbeats, cancellation, and graceful shutdown. Use when a Python service enqueues or executes asynchronous work with RQ.
+metadata:
+  author: Leonardo Fortunato
+  license: MIT
+  source: https://github.com/yonatangross/orchestkit
 ---
 
 # RQ Async Jobs

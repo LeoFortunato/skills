@@ -26,15 +26,12 @@ and universal retry counts.
 
 ## Required Recommendation
 
-Select `gpt-5.6-sol` and exactly one effort:
+Select a high-capacity reasoning model and an appropriate effort:
 
-- Use medium when the task is complex but well-defined.
-- Use high when the work requires difficult multi-step reasoning, several
-  sources, or material tradeoffs.
-- Use extra-high reasoning only when exceptional depth is necessary and speed
-  is secondary.
-- Reserve maximum effort for the hardest quality-first task where a lower level
-  is unlikely to meet the completion bar.
+- Use medium reasoning effort when the task is complex but well-defined.
+- Use high reasoning effort when the work requires difficult multi-step reasoning, several sources, or material tradeoffs.
+- Use extra-high reasoning effort only when exceptional depth is necessary and speed is secondary.
+- Reserve maximum effort for the hardest quality-first task where a lower level is unlikely to meet the completion bar.
 
 ## Prompt Template
 

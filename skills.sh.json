@@ -3,11 +3,27 @@
   "notGrouped": "bottom",
   "groupings": [
     {
-      "title": "Agent Workflows",
-      "description": "Skills for defining bounded and verifiable agent work.",
+      "title": "Agent Workflows & Prompt Engineering",
+      "description": "Skills for defining bounded and verifiable agent work, prompts, and alignment interviews.",
       "skills": [
         "goal-prompt-writer",
-        "prompt-enhancer-gpt-5-6"
+        "grilling",
+        "prompt-enhancer",
+        "prompt-refine"
+      ]
+    },
+    {
+      "title": "Architecture & Domain Modeling",
+      "description": "Skills for building ubiquitous language, context maps, and architectural decision records.",
+      "skills": [
+        "domain-modeling"
+      ]
+    },
+    {
+      "title": "Background Processing & Queues",
+      "description": "Skills for implementing and managing asynchronous workers and job queues.",
+      "skills": [
+        "rq-redis-queue"
       ]
     },
     {

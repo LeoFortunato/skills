@@ -1,6 +1,9 @@
 ---
-name: prompt-refine-codex-5-6
-description: Refine a draft prompt, task description, bug report, or debugging finding into a precise copy-ready prompt. Use when the user asks to improve or structure a prompt, turn findings into an implementation prompt, or create a persistent Codex `/goal` objective. Do not execute the finished task itself.
+name: prompt-refine
+description: Refine a draft prompt, task description, bug report, or debugging finding into a precise copy-ready prompt. Use when the user asks to improve or structure a prompt, turn findings into an implementation prompt, or create a persistent goal mode objective. Do not execute the finished task itself.
+metadata:
+  author: Leonardo Fortunato
+  license: MIT
 ---
 
 # Prompt Enhancer
@@ -20,7 +23,7 @@ Treat investigation findings, bug reports, stack traces, and proposed fixes as c
 3. Honor an explicit `simple`, `advanced`, or `goal` mode. If the requested mode is unknown, ask which of those three modes to use. Otherwise select one:
    - `simple` for a self-contained, bounded request.
    - `advanced` for multi-step work that needs context, boundaries, evidence, or validation made explicit.
-   - `goal` for an explicit Codex `/goal` request or a persistent, multi-turn objective with a clear evidence-based finish line.
+   - `goal` for an explicit `/goal` request or a persistent, multi-turn objective with a clear evidence-based finish line.
 4. For `goal`, perform only the targeted discovery needed to ground the verification surface, constraints, boundaries, and blocked stop condition. Do not invent them or sweep unrelated project context.
 5. Produce the prompt using the selected contract. State the outcome before the method, command direct execution on the codebase, remove duplicate instructions, and do not add unsupported facts.
 

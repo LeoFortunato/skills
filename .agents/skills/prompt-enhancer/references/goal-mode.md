@@ -1,6 +1,6 @@
-# Codex `/goal` Prompt Reference
+# Goal Mode (`/goal`) Prompt Reference
 
-Use this route for one persistent, long-running objective in a Codex task. The
+Use this route for one persistent, long-running objective in an agent workflow. The
 goal text acts as both the first prompt and the completion criteria.
 
 ## Product Constraints
@@ -8,7 +8,7 @@ goal text acts as both the first prompt and the completion criteria.
 - Keep the goal objective non-empty and no longer than 4,000 characters.
 - Put longer requirements in a file and point the goal to that file.
 - Starting a goal does not expand permission, credential, or access boundaries.
-- Keep the model and reasoning-effort recommendation outside the `/goal` text.
+- Keep the model tier and reasoning-effort recommendation outside the `/goal` text.
 - Write the generated goal in Technical English as this skill's convention.
 
 ## Token-Efficient Target Discovery Before Drafting
@@ -37,7 +37,7 @@ Carry the discovery into the prompt:
 
 - State one outcome rather than combining unrelated backlog items.
 - Include constraints only when they prevent a material failure.
-- Define verification that lets Codex determine when the goal is complete.
+- Define verification that lets the executor determine when the goal is complete.
 - Include the exact context and expected touch set confirmed during discovery.
 - Allow safe in-scope local work when the user's request authorizes changes.
 - Require confirmation for external, destructive, costly, or materially
@@ -51,16 +51,12 @@ wait for the answer before drafting the goal.
 
 ## Required Recommendation
 
-Select exactly one model and effort from the underlying task:
+Select an appropriate model capability tier and reasoning effort for the task:
 
-- Use `gpt-5.6-luna` with low effort for a clear, repeatable goal whose
-  completion criteria are fully specified.
-- Use `gpt-5.6-terra` with medium effort for everyday implementation and
-  tool-using goals.
-- Use `gpt-5.6-sol` with medium effort for complex but well-defined goals.
-- Raise Sol to high or extra-high effort only when the goal requires difficult
-  reasoning, several sources, or material tradeoffs.
-- Reserve maximum effort for the hardest quality-first goal.
+- Use a fast/lightweight model with low reasoning effort for a clear, repeatable goal whose completion criteria are fully specified.
+- Use a balanced general-purpose model with medium reasoning effort for everyday implementation and tool-using goals.
+- Use a high-capacity reasoning model with medium-to-high effort for complex, ambiguous, or architecture-level goals.
+- Reserve maximum effort for the hardest quality-first goals requiring deep reasoning across multiple constraints.
 
 ## Prompt Template
 

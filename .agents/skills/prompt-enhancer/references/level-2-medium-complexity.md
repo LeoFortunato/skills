@@ -18,13 +18,11 @@ need a small number of behavioral rules.
 
 ## Required Recommendation
 
-Select exactly one model and effort:
+Select an appropriate model tier and effort:
 
-- Prefer `gpt-5.6-terra` for balanced everyday work.
-- Select `gpt-5.6-sol` only when ambiguity, consequence, or required polish
-  exceeds the ordinary Level 2 case without making the task a Level 3 route.
-- Prefer medium reasoning effort. Use low only for an unusually deterministic
-  task with a complete specification.
+- Prefer a balanced general-purpose model for everyday multi-step work.
+- Select a high-capacity reasoning model only when ambiguity, consequence, or required polish exceeds the ordinary Level 2 case without making the task a Level 3 route.
+- Prefer medium reasoning effort. Use low only for an unusually deterministic task with a complete specification.
 
 ## Prompt Template
 
