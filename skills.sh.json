@@ -6,6 +6,7 @@
       "title": "Agent Workflows & Prompt Engineering",
       "description": "Skills for defining bounded and verifiable agent work, prompts, and alignment interviews.",
       "skills": [
+        "codex-session-recovery",
         "goal-prompt-writer",
         "grilling",
         "prompt-enhancer",

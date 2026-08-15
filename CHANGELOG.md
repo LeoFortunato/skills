@@ -7,6 +7,10 @@ Versioning.
 
 ## [Unreleased]
 
+### Added
+
+- Add `codex-session-recovery` skill for listing and inspecting previous Codex conversation history from local `~/.codex` session logs.
+
 ## [0.3.0] - 2026-08-13
 
 ### Added

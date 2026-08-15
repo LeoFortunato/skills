@@ -23,6 +23,11 @@ directory is one self-contained skill package.
 
 ## Available skills
 
+### `codex-session-recovery`
+
+Lists and accesses previous Codex sessions from local `~/.codex` logs, matching
+by repository path and extracting clean conversation histories.
+
 ### `domain-modeling`
 
 Builds and sharpens a project's domain model, ubiquitous language
@@ -90,6 +95,7 @@ npx skills add LeoFortunato/skills --list
 Install a specific skill:
 
 ```bash
+npx skills add LeoFortunato/skills --skill codex-session-recovery
 npx skills add LeoFortunato/skills --skill domain-modeling
 npx skills add LeoFortunato/skills --skill goal-prompt-writer
 npx skills add LeoFortunato/skills --skill grilling
