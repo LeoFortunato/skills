@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import glob
 import json
 import os
 
@@ -14,7 +13,7 @@ def get_current_repo_identifiers(target_dir: str) -> tuple[str, str]:
     abs_cwd = os.path.abspath(target_dir)
     repo_url = ""
 
-    # Try reading git remote origin url from .git/config if present
+    # Try reading git   remote origin url from .git/config if present
     git_config = os.path.join(abs_cwd, ".git", "config")
     if os.path.isfile(git_config):
         try:
@@ -37,24 +36,28 @@ def build_session_cwd_map(sessions_dirs: list[str]) -> dict[str, dict]:
     for sdir in sessions_dirs:
         if not os.path.isdir(sdir):
             continue
-        for fpath in glob.glob(os.path.join(sdir, "*.jsonl")):
-            try:
-                with open(fpath, "r", encoding="utf-8") as f:
-                    line = f.readline()
-                    if not line:
-                        continue
-                    data = json.loads(line)
-                    if data.get("type") == "session_meta":
-                        payload = data.get("payload", {})
-                        sid = payload.get("session_id") or payload.get("id")
-                        if sid:
-                            session_map[sid] = {
-                                "cwd": payload.get("cwd", ""),
-                                "repo": (payload.get("git") or {}).get("repository_url", ""),
-                                "file": fpath,
-                            }
-            except Exception:
-                continue
+        for root, _, files in os.walk(sdir):
+            for fname in files:
+                if not fname.endswith(".jsonl"):
+                    continue
+                fpath = os.path.join(root, fname)
+                try:
+                    with open(fpath, "r", encoding="utf-8") as f:
+                        line = f.readline()
+                        if not line:
+                            continue
+                        data = json.loads(line)
+                        if data.get("type") == "session_meta":
+                            payload = data.get("payload", {})
+                            sid = payload.get("session_id") or payload.get("id")
+                            if sid:
+                                session_map[sid] = {
+                                    "cwd": payload.get("cwd", ""),
+                                    "repo": (payload.get("git") or {}).get("repository_url", ""),
+                                    "file": fpath,
+                                }
+                except Exception:
+                    continue
     return session_map
 
 
@@ -63,14 +66,14 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=10, help="Number of recent sessions to return (default: 10)")
     parser.add_argument("--target-dir", type=str, default=".", help="Target repository directory (default: current directory)")
     parser.add_argument("--all", action="store_true", help="List all matching sessions without limit")
+    parser.add_argument("--include-archived", action="store_true", help="Include archived sessions")
     args = parser.parse_args()
 
     target_cwd, target_repo = get_current_repo_identifiers(args.target_dir)
 
-    sessions_dirs = [
-        os.path.expanduser("~/.codex/sessions"),
-        os.path.expanduser("~/.codex/archived_sessions"),
-    ]
+    sessions_dirs = [os.path.expanduser("~/.codex/sessions")]
+    if args.include_archived:
+        sessions_dirs.append(os.path.expanduser("~/.codex/archived_sessions"))
     index_path = os.path.expanduser("~/.codex/session_index.jsonl")
 
     session_map = build_session_cwd_map(sessions_dirs)

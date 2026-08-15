@@ -17,7 +17,7 @@ List and inspect previous Codex sessions scoped to the current repository from l
    python3 .agents/skills/codex-session-recovery/scripts/list_sessions.py
    # Or: python <path_to_skill>/scripts/list_sessions.py
    ```
-   This returns the last 10 sessions formatted as `<id>; <thread_name>; <updated_at>`. (Use `--limit <n>` or `--all` if more sessions are needed).
+   This returns the last 10 sessions formatted as `<id>; <thread_name>; <updated_at>`. (Use `--limit <n>`, `--all`, or `--include-archived` if needed).
 
 2. **Access & inspect session**: Run the reader script to extract only the user prompts and assistant replies:
    ```bash
