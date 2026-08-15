@@ -25,8 +25,9 @@ directory is one self-contained skill package.
 
 ### `codex-session-recovery`
 
-Lists and accesses previous Codex sessions from local `~/.codex` logs, matching
-by repository path and extracting clean conversation histories.
+Lists and accesses previous Codex sessions scoped to the current repository from
+local `~/.codex` logs, matching by repository path or git remote rather than
+listing all sessions across the machine.
 
 ### `domain-modeling`
 

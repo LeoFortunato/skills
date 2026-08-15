@@ -1,6 +1,6 @@
 ---
 name: codex-session-recovery
-description: List and access previous Codex sessions from local ~/.codex logs.
+description: List and access previous Codex sessions scoped to the current repository from local ~/.codex logs.
 metadata:
   author: Leonardo Fortunato
   license: MIT
@@ -8,7 +8,7 @@ metadata:
 
 # Codex Session Recovery
 
-List and inspect previous Codex sessions from local `~/.codex` logs.
+List and inspect previous Codex sessions scoped to the current repository from local `~/.codex` logs (does not list all sessions across the machine).
 
 ## Workflow
 
