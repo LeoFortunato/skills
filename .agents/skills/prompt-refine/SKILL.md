@@ -6,7 +6,7 @@ metadata:
   license: MIT
 ---
 
-# Prompt Enhancer
+# Prompt Refine
 
 Turn the user's material into the smallest unambiguous prompt contract. The recipient of the Enhanced Prompt is always the executor (the coding agent or developer that directly inspects, edits, tests, and validates code). Preserve explicit facts, choices, constraints, and required output language. Write every generated prompt in Technical English; express any requested artifact-output language as an instruction in that prompt.
 
@@ -24,14 +24,17 @@ Treat investigation findings, bug reports, stack traces, and proposed fixes as c
    - `simple` for a self-contained, bounded request.
    - `advanced` for multi-step work that needs context, boundaries, evidence, or validation made explicit.
    - `goal` for an explicit `/goal` request or a persistent, multi-turn objective with a clear evidence-based finish line.
-4. For `goal`, perform only the targeted discovery needed to ground the verification surface, constraints, boundaries, and blocked stop condition. Do not invent them or sweep unrelated project context.
+4. For `goal`, execute token-efficient target discovery before drafting:
+   - **Trust User Inputs:** If the user's draft already specifies exact file paths, target modules, or validation commands, adopt them directly without redundant re-reading.
+   - **Targeted Verification:** Verify unconfirmed paths and commands using targeted discovery (`list_dir`, `grep_search`, small line-range reads). Never invent paths, scripts, or validation commands.
+   - **Narrow Scope:** Focus strictly on direct touch sets, authoritative sources of truth, native validation commands, and pertinent documentation. Avoid sweeping unrelated files or test suites.
 5. Produce the prompt using the selected contract. State the outcome before the method, command direct execution on the codebase, remove duplicate instructions, and do not add unsupported facts.
 
 ## Repository Edits
 
 For a prompt that authorizes repository edits, instruct the executor to inspect and change only what is necessary to satisfy the request. Require it to identify and update the smallest pertinent documentation set for behavioral, architectural, configuration, contract, workflow, or operational changes. If no pertinent documentation exists, require that determination in the completion evidence.
 
-Require approval before a material scope expansion, including unrelated routes, packages, schemas, external state, or destructive work. Do not use a fixed Touch Set to prohibit necessary discovery or documentation updates.
+Require approval before a material scope expansion, including unrelated routes, packages, schemas, external state, credentials, or destructive work.
 
 ## Prompt Contracts
 
@@ -54,22 +57,46 @@ State observed and expected behavior for bugs. State what must be preserved for 
 
 ### `goal`
 
-Write one concise `/goal` operating contract with all of these elements:
+Produce one self-contained, outcome-first `/goal` operating contract that can continue across turns without widening authority. Focus on the observable destination, verifiable completion criteria, scope boundaries, and stopping rules rather than over-prescribing intermediate steps.
 
-- the outcome that must be true at completion (direct technical resolution);
-- the verification surface that proves it;
-- constraints that must remain intact;
-- confirmed boundaries for files, tools, data, or resources;
-- an iteration policy based on the latest evidence; and
-- a blocked stop condition that requires attempted paths, evidence, the blocker, and the input needed to continue.
+Core requirements for `/goal`:
+- **Outcome-First:** Clearly define the observable objective and done criteria.
+- **Touch Set Governance:** Enforce confirmed in-scope paths (`Modify` / `Add`). Prohibit inspecting or modifying files outside this touch set without prior approval, with the sole exception of mandatory documentation synchronization.
+- **Documentation Synchronization:** Require identifying and updating the pertinent documentation describing changes made, or explicitly stating in the completion evidence that no pertinent documentation exists.
+- **Safety Gates (*Ask Before*):** Place commits, pushes, deployments, remote writes, credentials, production data, destructive actions, and material scope expansion behind explicit user approval.
+- **Repository-Native Validation:** Specify exact native commands (tests, linter, typecheck, build). Require fallback evidence reporting if a check cannot run.
+- **Honest Stopping Conditions:** Require stopping and asking when required decisions/credentials are missing, requirements conflict, or the same blocker persists after three distinct attempts.
+- **Length Constraint:** Keep the objective non-empty and strictly within 4,000 characters. Put longer specifications or briefs in a referenced file and point the goal to that file.
 
-When a constraint or boundary has no restriction beyond the current task context, state that rather than omitting the element. Use this shape:
+#### `/goal` Template
 
-```text
-/goal <outcome>, verified by <evidence>, while preserving <constraints>. Work within <boundaries>. Between iterations, <evidence-based iteration policy>. If blocked or no valid path remains, stop and report <attempted paths, evidence, blocker, and next input needed>.
+```markdown
+/goal [Complete one observable outcome]. Done when [verification criteria].
+
+Context:
+- Source of truth: [Exact plan, brief, issue, or authoritative file path.]
+- Primary targets: [Exact confirmed source or configuration paths.]
+
+Expected touch set:
+- Modify: [Exact confirmed existing paths.]
+- Add: [Exact confirmed new paths, if any.]
+- Do NOT inspect or edit files outside this touch set without prior user approval, except for mandatory documentation synchronization below.
+- Documentation synchronization: identify and update the pertinent documentation describing changes made, or explicitly record that no pertinent documentation exists.
+
+Constraints:
+- Treat current code, configuration, tests, and explicit user instructions as truth over stale documentation.
+- Preserve [public API, runtime behavior, data contract, or invariants].
+- Ask before [destructive action, credentials, remote write, commit, push, deployment, production data, or material scope expansion].
+
+Validation:
+- Run `[exact repository-native validation command]`.
+- Confirm [observable artifact or behavior].
+- If a check cannot run, report why and provide the next-best evidence.
+
+Stop and ask:
+- A required user decision, credential, authorization, or conflicting requirement is missing.
+- Work requires an action outside authorized scope, or the same blocker persists after three distinct attempts.
 ```
-
-Keep the objective non-empty, within 4,000 characters, and focused on the completion contract rather than a prescribed implementation path.
 
 ## Required Output
 
@@ -90,7 +117,11 @@ Before delivery, confirm that the prompt:
 - has an observable outcome and completion bar;
 - contains no unsupported facts, contradictions, or duplicate instructions;
 - is fully in Technical English;
-- for `goal`, defines a verifiable finish line, bounded iteration, and an honest blocked stop condition;
+- for `goal`, includes target paths and native validation grounded via token-efficient discovery;
+- for `goal`, enforces touch set boundaries with mandatory documentation synchronization;
+- for `goal`, defines explicit *ask-before* gates for destructive actions, credentials, remote operations, and scope expansions;
+- for `goal`, provides verifiable finish lines with fallback evidence rules and honest stop-and-ask conditions (including a blocker threshold);
+- for `goal`, keeps the objective strictly within 4,000 characters;
 - requires pertinent documentation synchronization for repository edits;
 - asks for approval before material scope expansion; and
 - is no longer than necessary.
